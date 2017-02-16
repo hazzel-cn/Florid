@@ -75,7 +75,7 @@ def init():
         return True
     except Exception as e:
         if type(e) == requests.exceptions.ConnectionError:
-            return '\033[7m\33[31m[Attention] Please run the "sqlmapapi.py" first\033[0m\n'
+            return 'Please run the "sqlmapapi.py" first'
 
 
 def run(options):

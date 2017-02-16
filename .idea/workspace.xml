@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="a65f024b-1121-45a6-abae-749be72b6b04" name="Default" comment="">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/mod/ALL.py" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/florid.py" afterPath="$PROJECT_DIR$/florid.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mod/sqli.py" afterPath="$PROJECT_DIR$/mod/sqli.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mod/test.py" afterPath="$PROJECT_DIR$/mod/test.py" />
@@ -23,8 +22,8 @@
       <file leaf-file-name="florid.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/florid.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="636">
-              <caret line="66" column="0" lean-forward="false" selection-start-line="66" selection-start-column="0" selection-end-line="66" selection-end-column="0" />
+            <state relative-caret-position="486">
+              <caret line="56" column="0" lean-forward="false" selection-start-line="56" selection-start-column="0" selection-end-line="56" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -33,8 +32,8 @@
       <file leaf-file-name="sqli.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/mod/sqli.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-24">
-              <caret line="23" column="0" lean-forward="true" selection-start-line="23" selection-start-column="0" selection-end-line="23" selection-end-column="0" />
+            <state relative-caret-position="786">
+              <caret line="77" column="55" lean-forward="false" selection-start-line="77" selection-start-column="55" selection-end-line="77" selection-end-column="55" />
               <folding>
                 <element signature="e#39#54#0" expanded="true" />
               </folding>
@@ -45,8 +44,8 @@
       <file leaf-file-name="test.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/mod/test.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="90">
-              <caret line="6" column="0" lean-forward="false" selection-start-line="6" selection-start-column="0" selection-end-line="7" selection-end-column="15" />
+            <state relative-caret-position="105">
+              <caret line="7" column="46" lean-forward="false" selection-start-line="7" selection-start-column="46" selection-end-line="7" selection-end-column="46" />
               <folding />
             </state>
           </provider>
@@ -69,9 +68,9 @@
       <list>
         <option value="$PROJECT_DIR$/mod/all.py" />
         <option value="$PROJECT_DIR$/mod/A.py" />
-        <option value="$PROJECT_DIR$/mod/sqli.py" />
-        <option value="$PROJECT_DIR$/mod/test.py" />
         <option value="$PROJECT_DIR$/mod/ALL.py" />
+        <option value="$PROJECT_DIR$/mod/test.py" />
+        <option value="$PROJECT_DIR$/mod/sqli.py" />
         <option value="$PROJECT_DIR$/florid.py" />
       </list>
     </option>
@@ -426,16 +425,16 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/mod/test.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="90">
-          <caret line="6" column="0" lean-forward="false" selection-start-line="6" selection-start-column="0" selection-end-line="7" selection-end-column="15" />
+        <state relative-caret-position="105">
+          <caret line="7" column="46" lean-forward="false" selection-start-line="7" selection-start-column="46" selection-end-line="7" selection-end-column="46" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/mod/sqli.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-24">
-          <caret line="23" column="0" lean-forward="true" selection-start-line="23" selection-start-column="0" selection-end-line="23" selection-end-column="0" />
+        <state relative-caret-position="786">
+          <caret line="77" column="55" lean-forward="false" selection-start-line="77" selection-start-column="55" selection-end-line="77" selection-end-column="55" />
           <folding>
             <element signature="e#39#54#0" expanded="true" />
           </folding>
@@ -444,8 +443,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/florid.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="636">
-          <caret line="66" column="0" lean-forward="false" selection-start-line="66" selection-start-column="0" selection-end-line="66" selection-end-column="0" />
+        <state relative-caret-position="486">
+          <caret line="56" column="0" lean-forward="false" selection-start-line="56" selection-start-column="0" selection-end-line="56" selection-end-column="0" />
           <folding />
         </state>
       </provider>

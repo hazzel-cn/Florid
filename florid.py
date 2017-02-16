@@ -52,21 +52,21 @@ def load_module(modules):
             if '__init__' not in __module:
                 modules.append(__module.replace('mod/', '').replace('.py', ''))
 
-    real_module = []
+    real_modules = []
     for _ in modules:
         try:
             print '[+] Importing Module \033[33m' + _ + '\033[0m...\t',
             m = __import__('mod.' + _, fromlist = ["*"])
             m_init = m.init()
             if m_init == True:
-                real_module.append(m)
+                real_modules.append(m)
                 print '\033[32m[^] Done \033[0m'
             else:
-                print '\033[31m[!] Fail\033[0m%s' % m_init
-                break
+                print '\033[31m[!] Fail\033[0m \033[7m\33[31m[Attention] %s\033[0m' % m_init
+                continue
         except:
             print '\033[31m[!] Fail\033[0m'
-    return real_module
+    return real_modules
 
 
 def main():
