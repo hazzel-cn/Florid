@@ -6,6 +6,7 @@ An active scanner
 ```
 python florid.py -h
 python florid.py -u "http://testphp.vulnweb.com/product.php?pic=1" -m sqli,test
+```
 
 ### Development
 
