@@ -7,8 +7,8 @@ import optparse
 import datetime
 
 florid = {
-    'version': '0.1 dev',
-    'update': '2017-02-15',
+    'version': '0.2 dev',
+    'update': '2017-02-16',
     'logo': '''
      _____  _            _     _
     |  ___|| | ___  _ __(_) __| |
@@ -29,10 +29,10 @@ def show_banner():
 
 def get_parser():
     parser = optparse.OptionParser()
-    parser.add_option('-u', '--url', action = 'store', dest = 'url', help = 'The URL you want to scan')
+    parser.add_option('-u', action = 'store', dest = 'url', help = 'The URL you want to scan')
+    parser.add_option('-m', action='store', dest='module', help='Module names (split with ",")')
     parser.add_option('-f', '--file', action = 'store', dest = 'file', help = 'The file containing URLs')
-    parser.add_option('-m', '--module', action = 'store', dest = 'module', help = 'Module names (split with ",")')
-    parser.add_option('-t', '--stime', action = 'store', dest = 'stime', type = 'int', default = 0, help = 'Sleep time')
+    parser.add_option('-t', action = 'store', dest = 'stime', type = 'int', default = 0, help = 'Sleep time')
     (options, args) = parser.parse_args()
     if options.url is not None and '://' not in options.url:
         options.url = 'http://' + options.url
@@ -64,7 +64,7 @@ def main():
 
     if options.module is not False:
         for _ in options.module:
-            print '\n(\033[34m' + _.MODULE_NAME + '\033[0m)\t>>======'
+            print '\n(\033[36m' + _.MODULE_NAME + '\033[0m)\t>>======'
             _.run(options)
 
 

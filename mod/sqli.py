@@ -16,15 +16,20 @@ class SqlInjectionCheck(object):
         self.targeturl = targeturl
 
     def __newtask(self):
-        self.taskid = requests.get(self.sqlmapurl + '/task/new').json()['taskid']
-        print '[*] Task ID: %s' % self.taskid
-        if len(self.taskid) > 0:
-            return True
-        return False
+        try:
+            self.taskid = requests.get(self.sqlmapurl + '/task/new').json()['taskid']
+            print '[*] Task ID: %s' % self.taskid
+            if len(self.taskid) > 0:
+                return True
+            return False
+        except Exception as e:
+            if type(e) == requests.exceptions.ConnectionError:
+                print '\033[7m\33[31m[Attention] Please run the "sqlmapapi.py" first\033[0m\n'
+                exit()
 
     def __deletetask(self):
         if json.loads(requests.get(self.sqlmapurl + '/task/' + self.taskid + '/delete').text)['success']:
-            print '[*] Task Deleted: %s' % self.taskid
+            print '[*] Task Completed: %s' % self.taskid
             return True
         return False
 
@@ -66,6 +71,7 @@ class SqlInjectionCheck(object):
         if self.__newtask():
             if self.__starttask():
                 self.__deletetask()
+
 
 
 def run(options):
