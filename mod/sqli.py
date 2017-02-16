@@ -39,7 +39,7 @@ class SqlInjectionCheck(object):
             print '  \033[32m\33[1m' + self.resultvalue['dbms'], self.resultvalue['dbms_version'][0], self.resultvalue['place'] + '\033[0m'
             for i in range(0, 10):
                 try:
-                    print '[payload]:\t\033[32m%s\033[0m' % self.resultvalue['data'][str(i)]['payload']
+                    print '    [payload]:\t\033[32m%s\033[0m' % self.resultvalue['data'][str(i)]['payload']
                 except:
                     pass
             return True
