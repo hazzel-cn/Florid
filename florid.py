@@ -38,7 +38,7 @@ def get_parser():
         options.url = 'http://' + options.url
     if options.module is not None:
         options.module = options.module.split(',')
-        print '[*] Scanning the\033[33m {0}\033[0m with module{1}'.format(options.url, ','.join('\033[33m ' + _ + '\033[0m' for _ in options.module))
+        print '[*] Scanning the\033[33m \33[4m{0}\033[0m with module\33[4m{1}'.format(options.url, ','.join('\033[33m ' + _ + '\033[0m' for _ in options.module))
     return options
 
 
