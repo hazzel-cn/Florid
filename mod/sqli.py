@@ -2,6 +2,7 @@
 # -*-coding:utf-8-*-
 import requests
 import json
+import time
 
 
 MODULE_NAME = 'sqli'
@@ -52,6 +53,8 @@ class SqlInjectionCheck(object):
             print requests.get(self.sqlmapurl + '/scan/' + self.taskid + '/data').json()
             if len(str(r.json()['engineid'])) > 0:
                 print r.json()['engineid']
+        while self.__statuscheck() != 'terminated':
+            time.sleep(1)
         self.__resultcheck()
         return True
 
