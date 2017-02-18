@@ -50,7 +50,7 @@ def load_module(modules):
         modules.remove('ALL')
         for __module in glob.glob('mod/*.py'):
             if '__init__' not in __module:
-                modules.append(__module.replace('mod/', '').replace('.py', ''))
+                modules.append(__module[4:].replace('.py', ''))
 
     real_modules = []
     for _ in modules:
