@@ -1,6 +1,7 @@
 #!/usr/bin/python
 # -*-coding:utf-8-*-
 import requests
+import time
 import json
 import time
 
@@ -22,9 +23,10 @@ class SqlInjectionCheck(object):
             return True
         return False
 
+
     def __deletetask(self):
         if json.loads(requests.get(self.sqlmapurl + '/task/' + self.taskid + '/delete').text)['success']:
-            print '[*] Task Deleted: %s' % self.taskid
+            print '[*] Task Completed: %s' % self.taskid
             return True
         return False
 
@@ -34,7 +36,14 @@ class SqlInjectionCheck(object):
     def __resultcheck(self):
         self.result = json.loads(requests.get(self.sqlmapurl + '/scan/' + self.taskid + '/data').text)['data']
         if len(self.result) > 0:
-            print '[*] The Page is Vul: %s' % self.result
+            print '\033[32m[*] The Page is Vul\033[0m'
+            self.resultvalue = self.result[1]['value'][0]
+            print '  \033[32m\33[1m' + self.resultvalue['dbms'], self.resultvalue['dbms_version'][0], self.resultvalue['place'] + '\033[0m'
+            for i in range(0, 10):
+                try:
+                    print '    [payload]:\t\033[32m%s\033[0m' % self.resultvalue['data'][str(i)]['payload']
+                except:
+                    pass
             return True
         else:
             print '[*] The page is not Vul'
@@ -48,11 +57,7 @@ class SqlInjectionCheck(object):
             'url': self.targeturl
         }
         while self.__statuscheck() == 'not running':
-            print 'Scanning...',
             r = requests.post(url = self.sqlmapurl + '/scan/' + self.taskid + '/start', data = json.dumps(self.data), headers = self.headers)
-            print requests.get(self.sqlmapurl + '/scan/' + self.taskid + '/data').json()
-            if len(str(r.json()['engineid'])) > 0:
-                print r.json()['engineid']
         while self.__statuscheck() != 'terminated':
             time.sleep(1)
         self.__resultcheck()
@@ -63,6 +68,15 @@ class SqlInjectionCheck(object):
         if self.__newtask():
             if self.__starttask():
                 self.__deletetask()
+
+
+def init():
+    try:
+        r = requests.get(SQLMAP_URL)
+        return True
+    except Exception as e:
+        if type(e) == requests.exceptions.ConnectionError:
+            return 'Please run the "sqlmapapi.py" first'
 
 
 def run(options):
