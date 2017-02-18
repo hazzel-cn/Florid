@@ -7,8 +7,8 @@ import optparse
 import datetime
 
 florid = {
-    'version': '0.2 dev',
-    'update': '2017-02-16',
+    'version': '0.2.1 dev',
+    'update': '2017-02-18',
     'logo': '''
      _____  _            _     _
     |  ___|| | ___  _ __(_) __| |

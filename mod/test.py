@@ -5,7 +5,7 @@ MODULE_NAME = 'test'
 
 
 def init():
-    return 'I dont want to return True Asshole'
+    return 'I dont want to return True'
 
 def run(options):
     print "I am test module !!!, I am testing %s" % options.url
