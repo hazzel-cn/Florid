@@ -3,6 +3,7 @@
 import sys
 sys.dont_write_bytecode = True
 import glob
+import urlparse
 import optparse
 import datetime
 
@@ -37,8 +38,9 @@ def get_parser():
     if options.url is not None and '://' not in options.url:
         options.url = 'http://' + options.url
     if options.module is not None:
-        options.module = options.module.split(',')
+        options.module = options.module.replace(' ','').split(',')
         print '[*] Scanning the\033[33m \33[4m{0}\033[0m with module\33[4m{1}'.format(options.url, ','.join('\033[33m ' + _ + '\033[0m' for _ in options.module))
+    options.hostname = urlparse.urlparse(options.url).hostname
     return options
 
 
