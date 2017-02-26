@@ -40,7 +40,7 @@ class SqlInjectionCheck(object):
         self.result = json.loads(requests.get(self.sqlmapurl + '/scan/' + self.taskid + '/data').text)['data']
         if len(self.result) > 0:
             print '\033[32m[*] The Page is Vul\033[0m: %s' % self.targeturl
-            self.resultvalue = self.result[0]['value'][0]
+            self.resultvalue = self.result[1]['value'][0]
             try:
                 print '  \033[32m\33[1m' + self.resultvalue['dbms'], self.resultvalue['place'] + '\033[0m'
             except:
