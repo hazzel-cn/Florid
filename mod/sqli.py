@@ -42,7 +42,7 @@ class SqlInjectionCheck(object):
             print '\033[32m[*] The Page is Vul\033[0m: %s' % self.targeturl
             self.resultvalue = self.result[1]['value'][0]
             try:
-                print '  \033[32m\33[1m' + self.resultvalue['dbms'], self.resultvalue['place'] + '\033[0m'
+                print '  \033[32m\33[1m --< ' + self.resultvalue['dbms'], self.resultvalue['place'] + ' >-- \033[0m'
             except:
                 pass
             for i in range(0, 10):
@@ -117,6 +117,6 @@ def run(options):
         t.setDaemon(True)
         t.start()
         time.sleep(10)
-    while threading.activeCount() > 0:
-        print threading.activeCount(), '\rActive Threads Number:',
+    while threading.activeCount() > 1:
+        print threading.activeCount()-1, '\rActive Threads Number:',
         time.sleep(1)
