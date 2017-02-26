@@ -22,6 +22,9 @@ class Spider(object):
         self.txt = open('log/' + self.hostname + '/url_list.txt', 'w+')
 
     def crawl(self):
+        #req = requests.Session()
+        #req.cookies['PHPSESSID'] = 'nfcl6csp2kenfh9asafmhce804'
+        
         while len(self.url_list) > 0:
             r = requests.get(self.url_list[0])
             if r.status_code != 404:
@@ -34,6 +37,8 @@ class Spider(object):
             self.current_url_dirname = os.path.dirname(self.current_url)
             self.current_url_basename = os.path.basename(self.current_url)
 
+            if VERBOSE:
+                print '  ', self.url_list[0]
             self.url_list.pop(0)
             
             for tag in self.soup.findAll('form', action=True):
@@ -43,7 +48,7 @@ class Spider(object):
                     self.visited_list.append(url_new)
             for tag in self.soup.findAll('a', href=True):
                 url_new = urlparse.urljoin(self.current_url, tag['href'])
-                if self.netloc in url_new and url_new not in self.visited_list and '#' not in url_new:
+                if self.netloc in url_new and url_new not in self.visited_list and '#' not in url_new and 'logout' not in url_new:
                     self.url_list.append(url_new)
                     self.visited_list.append(url_new)
                     
@@ -55,6 +60,8 @@ def init():
 
 
 def run(options):
+    global VERBOSE
+    VERBOSE = options.verbose
     print '[*] Running....'
-    a = Spider(options.url)
-    a.crawl()
+    a = Spider(options.url).crawl()
+    print '[*] Complete'
