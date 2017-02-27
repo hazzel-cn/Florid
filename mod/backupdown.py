@@ -77,7 +77,7 @@ def run(options):
 
     urls = []
     for _line in open('log/'+options.hostname+'/url_list.txt'):
-        _url = _line.replace('\n', '')
+        _url = _line.replace[:-1]
         _url = _url.replace(urlparse.urlparse(_url).query, '').replace('?','')
         if _url not in urls and os.path.splitext(os.path.basename(_url))[1] in INCLUDED_SUFFIX:
             urls.append(_url)

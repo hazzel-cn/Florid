@@ -39,7 +39,7 @@ def get_parser():
     (options, args) = parser.parse_args()
     if options.url is not None:
         options.hostname = urlparse.urlparse(options.url).hostname
-    if '://' not in options.url:
+    if not options.url.startswith('http'):
         options.url = 'http://' + options.url
         
     if options.module is not None:
