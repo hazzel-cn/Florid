@@ -99,7 +99,7 @@ def run(options):
     urls_p = []
     urls_s = []
     for _line in open('log/'+options.hostname+'/url_list.txt'):
-        _url = _line.replace[:-1]
+        _url = _line[:-1]
         if urlparse.urlparse(_url).query != '':
             if os.path.basename(_url).replace(urlparse.urlparse(_url).query, '').replace('?','') not in urls_p:
                 if VERBOSE:

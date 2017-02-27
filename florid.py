@@ -38,9 +38,9 @@ def get_parser():
     parser.add_option('-t', action = 'store', dest = 'stime', type = 'int', default = 0, help = 'Sleep time')
     (options, args) = parser.parse_args()
     if options.url is not None:
+        if not options.url.startswith('http'):
+            options.url = 'http://' + options.url
         options.hostname = urlparse.urlparse(options.url).hostname
-    if not options.url.startswith('http'):
-        options.url = 'http://' + options.url
         
     if options.module is not None:
         options.module = options.module.replace(' ','').split(',')
