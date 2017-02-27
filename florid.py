@@ -1,6 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 import sys
+
 sys.dont_write_bytecode = True
 import glob
 import urlparse
@@ -30,21 +31,22 @@ def show_banner():
 
 def get_parser():
     parser = optparse.OptionParser()
-    parser.add_option('-u', action = 'store', dest = 'url', help = 'The URL you want to scan')
+    parser.add_option('-u', action='store', dest='url', help='The URL you want to scan')
     parser.add_option('-m', action='store', dest='module', help='Module names (split with ",")')
-    parser.add_option('-f', '--file', action = 'store', dest = 'file', help = 'The file containing URLs')
-    parser.add_option('-l', action = 'store_true', dest = 'list', help = 'Show the list of modules')
-    parser.add_option('-v', action = 'store_true', dest = 'verbose', default = False)
-    parser.add_option('-t', action = 'store', dest = 'stime', type = 'int', default = 0, help = 'Sleep time')
+    parser.add_option('-f', '--file', action='store', dest='file', help='The file containing URLs')
+    parser.add_option('-l', action='store_true', dest='list', help='Show the list of modules')
+    parser.add_option('-v', action='store_true', dest='verbose', default=False)
+    parser.add_option('-t', action='store', dest='stime', type='int', default=0, help='Sleep time')
     (options, args) = parser.parse_args()
     if options.url is not None:
         if not options.url.startswith('http'):
             options.url = 'http://' + options.url
         options.hostname = urlparse.urlparse(options.url).hostname
-        
+
     if options.module is not None:
-        options.module = options.module.replace(' ','').split(',')
-        print '[*] Scanning the\033[33m \33[4m{0}\033[0m with module \33[4m{1}'.format(options.url, ','.join('\033[33m' + _ + '\033[0m' for _ in options.module))
+        options.module = options.module.replace(' ', '').split(',')
+        print '[*] Scanning the\033[33m \33[4m{0}\033[0m with module \33[4m{1}'.format(options.url, ','.join(
+            '\033[33m' + _ + '\033[0m' for _ in options.module))
     return options
 
 
@@ -64,7 +66,7 @@ def load_module(modules):
     for _ in modules:
         try:
             print '[+] Importing Module \033[33m' + _ + '\033[0m...\t',
-            m = __import__('mod.' + _, fromlist = ["*"])
+            m = __import__('mod.' + _, fromlist=["*"])
             m_init = m.init()
             if m_init == True:
                 real_modules.append(m)
@@ -81,13 +83,11 @@ def main():
     show_banner()
     options = get_parser()
 
-
     if options.list == True:
         print '[-] mod/'
         for __module in glob.glob('mod/*.py'):
             if '__init__' not in __module:
                 print '\t\_', __module[4:].replace('.py', '')
-
 
     options.module = load_module(options.module)
 
