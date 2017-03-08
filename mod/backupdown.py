@@ -1,8 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 import os
-import time
 import urlparse
+
 import requests
 
 MODULE_NAME = 'backupdown'
@@ -30,9 +30,10 @@ class VimDown(object):
                     _f.write(r.content)
                     return True
                 else:
-                    return False
+                    pass
             except:
-                return False
+                pass
+        return False
 
 
 class GeditDown(object):
@@ -54,9 +55,10 @@ class GeditDown(object):
                 _f.write(r.content)
                 return True
             else:
-                return False
+                pass
         except:
-            return False
+            pass
+        return False
 
 
 def init():
@@ -69,10 +71,12 @@ def run(url):
     '''
 
     url = url.replace(urlparse.urlparse(url).query, '').replace('?', '')
+    if urlparse.urlparse(url).path.endswith('/'):
+        url = url + 'index.php'
     if os.path.splitext(os.path.basename(url))[1] in INCLUDED_SUFFIX:
         if VimDown(url).download() or GeditDown(url).download():
             print 'Success'
         else:
             print 'Fail'
     else:
-        print 'Fail'
+        print 'Not Fail'
