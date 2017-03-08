@@ -21,25 +21,18 @@ class VimDown(object):
             '?', '')
 
     def download(self):
-
-        global VERBOSE
-
         for _ in SUFFIX_ARRAY:
             url_down = self.dirname + '/.' + self.basename + _
-
             try:
                 r = requests.get(url_down, timeout=3)
                 if r.status_code == 200:
-                    print 'url_down\t[SUCCESS] <=============='
                     _f = open('log/' + self.hostname + '/' + self.basename + _, 'wb')
                     _f.write(r.content)
+                    return True
                 else:
-                    if VERBOSE:
-                        print '  ', url_down, '\tFAIL'
+                    return False
             except:
-                if VERBOSE:
-                    print '  ', url_down, '\tFAIL'
-        return True
+                return False
 
 
 class GeditDown(object):
@@ -57,36 +50,29 @@ class GeditDown(object):
         try:
             r = requests.get(url_down)
             if r.status_code == 200:
-                print 'url_down\t[SUCCESS] <=============='
                 _f = open('log/' + self.hostname + '/' + self.basename + '~', 'wb')
                 _f.write(r.content)
+                return True
             else:
-                if VERBOSE:
-                    print '  ', url_down, '\tFAIL'
+                return False
         except:
-            if VERBOSE:
-                print '  ', url_down, '\tFAIL'
-        return True
+            return False
 
 
 def init():
-    return True
+    return (True, 'SUCCESS')
 
 
-def run(options):
-    global VERBOSE
-    VERBOSE = options.verbose
-    urls = []
-    for _line in open('log/' + options.hostname + '/url_list.txt'):
-        _url = _line[:-1]
-        _url = _url.replace(urlparse.urlparse(_url).query, '').replace('?', '')
-        if _url not in urls and os.path.splitext(os.path.basename(_url))[1] in INCLUDED_SUFFIX:
-            urls.append(_url)
-    print '[*] URL List Loaded.'
-    print '[*] Scanning.....'
+def run(url):
+    '''
+    Plan to add the function which can add suffix automatically. e.g: when input www.hazzel.cn, it should be rewritten to www.hazzel.cn/index.php
+    '''
 
-    for _u in urls:
-        a = VimDown(_u).download()
-        b = GeditDown(_u).download()
-        time.sleep(0.5)
-    print '[*] Finished'
+    url = url.replace(urlparse.urlparse(url).query, '').replace('?', '')
+    if os.path.splitext(os.path.basename(url))[1] in INCLUDED_SUFFIX:
+        if VimDown(url).download() or GeditDown(url).download():
+            print 'Success'
+        else:
+            print 'Fail'
+    else:
+        print 'Fail'
