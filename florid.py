@@ -1,101 +1,143 @@
-#!/usr/bin/python
+#! /usr/bin/env python
 # -*- coding: utf-8 -*-
-import sys
 
-sys.dont_write_bytecode = True
+import sys
 import glob
-import urlparse
 import optparse
 import datetime
+import platform
+import threading
+import lib.helper as helper
+import lib.common as common
+import mod.spider
 
-florid = {
-    'version': '0.2.1 dev',
-    'update': '2017-02-18',
+if common.WebInfo.os == 'Win':
+    import lib.colorprint_win as ColorPrint
+else:
+    import lib.colorprint_nix as ColorPrint
+
+sys.dont_write_bytecode = True
+
+florid_banner = {
+    'version': '0.3.2 dev',
+    'update': '2017-03-07',
     'logo': '''
      _____  _            _     _
     |  ___|| | ___  _ __(_) __| |
     | |__  | |/ _ \| '__| |/ _` |
     |  __| | | (_) | |  | | (_| |
-    |_|    |_|\___/|_|  |_|\__,_| [ ACTIVE SCANNER ]
+    |_|    |_|\___/|_|  |_|\__,_| [ CTF ACTIVE SCANNER ]
     '''
 }
 
 
-def show_banner():
-    print florid['logo']
-    print '[Florid Version] ' + florid['version']
-    print '[Last Updated] ' + florid['update']
+def florid_show_banner():
+    print florid_banner['logo']
+    print '[Florid Version] ' + florid_banner['version']
+    print '[Last Updated] ' + florid_banner['update']
     print '[*] ' + datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     print '\n'
 
 
-def get_parser():
+def florid_get_parse():
     parser = optparse.OptionParser()
-    parser.add_option('-u', action='store', dest='url', help='The URL you want to scan')
-    parser.add_option('-m', action='store', dest='module', help='Module names (split with ",")')
-    parser.add_option('-f', '--file', action='store', dest='file', help='The file containing URLs')
-    parser.add_option('-l', action='store_true', dest='list', help='Show the list of modules')
-    parser.add_option('-v', action='store_true', dest='verbose', default=False)
-    parser.add_option('-t', action='store', dest='stime', type='int', default=0, help='Sleep time')
-    (options, args) = parser.parse_args()
-    if options.url is not None:
-        if not options.url.startswith('http'):
-            options.url = 'http://' + options.url
-        options.hostname = urlparse.urlparse(options.url).hostname
+    parser.add_option('-u', action='store', dest='url', help='Target URL')
+    parser.add_option('-m', action='store', dest='modules', help='Modules to be included')
+    parser.add_option('-v', action='store_true', dest='verbose', help='Flag to show details')
 
-    if options.module is not None:
-        options.module = options.module.replace(' ', '').split(',')
-        print '[*] Scanning the\033[33m \33[4m{0}\033[0m with module \33[4m{1}'.format(options.url, ','.join(
-            '\033[33m' + _ + '\033[0m' for _ in options.module))
+    (options, args) = parser.parse_args()
     return options
 
 
-def load_module(modules):
-    if modules is None:
-        return False
+def florid_init_env(options):
+    common.WebInfo.os = platform.system()
 
-    if 'ALL' in modules:
-        modules.remove('ALL')
+    # target URL
+    common.WebInfo.url = ''
+    if options.url is not None:
+        if not options.url.startswith('http'):
+            common.WebInfo.url = 'http://' + options.url
+        else:
+            common.WebInfo.url = options.url
+
+    # Modules array
+    common.WebInfo.modules = []
+    if options.modules is not None:
+        common.WebInfo.modules = options.modules.replace(' ', '').split(',')
+
+    # Verbose
+    common.WebInfo.verbose = options.verbose
+
+    return common.WebInfo
+
+
+def florid_import_modules():
+    if common.WebInfo.modules is None:
+        return False
+    # Load modules list
+    if 'ALL' in common.WebInfo.modules:
+        common.WebInfo.modules.remove('ALL')
         for __module in glob.glob('mod/*.py'):
             if '__init__' not in __module:
-                modules.append(__module[4:].replace('.py', ''))
-        modules.remove('spider')
-        modules.insert(0, 'spider')
-
-    real_modules = []
-    for _ in modules:
+                common.WebInfo.modules.append(__module[4:].replace('.py', ''))
+        common.WebInfo.modules.remove('spider')
+        common.WebInfo.modules.remove('sqli')
+    # Import modules from the list above && initialize every module
+    print '__MODS__'
+    for _ in common.WebInfo.modules:
+        print '\t\_%s\t' % _,
         try:
-            print '[+] Importing Module \033[33m' + _ + '\033[0m...\t',
-            m = __import__('mod.' + _, fromlist=["*"])
-            m_init = m.init()
-            if m_init == True:
-                real_modules.append(m)
-                print '\033[32m[^] Done \033[0m'
+            _m = __import__('mod.' + _, fromlist=["*.py"])
+            _m_init_result = _m.init()
+            if _m_init_result[0]:
+                ColorPrint.green(_m_init_result[1] + '\n')
+                common.WebInfo.modules_list[_] = _m
             else:
-                print '\033[31m[!] Fail\033[0m \033[7m\33[31m[Attention] %s\033[0m' % m_init
+                ColorPrint.red(_m_init_result[1])
                 continue
         except:
-            print '\033[31m[!] Fail\033[0m'
-    return real_modules
+            pass
+    print '\n'
+    return common.WebInfo.modules_list
+
+
+def spider_module_call():
+    import mod.spider
+    threading.Thread(target=mod.spider.run, args=()).start()
+
+
+def sqli_module_call():
+    import mod.sqli
+    mod.sqli.init()
+    mod.sqli.run()
+
+
+def other_modules_call():
+    while not common.SPIDER_END or common.TASK_QUEUE.qsize() > 0:
+        if common.LOCKER.acquire():
+            if common.TASK_QUEUE.qsize() > 0:
+                url = common.TASK_QUEUE.get()
+                print '\n\tChecking... + %s' % url
+                for _ in common.WebInfo.modules_list:
+                    print '\t\t\_',
+                    ColorPrint.sky_blue(_)
+                    print ' is running......\t',
+                    _t = threading.Thread(target=common.WebInfo.modules_list[_].run, args=(url,))
+                    _t.start()
+                    _t.join()
+                common.LOCKER.release()
+            else:
+                common.LOCKER.wait()
 
 
 def main():
-    show_banner()
-    options = get_parser()
+    florid_show_banner()
+    florid_init_env(florid_get_parse())
 
-    if options.list == True:
-        print '[-] mod/'
-        for __module in glob.glob('mod/*.py'):
-            if '__init__' not in __module:
-                print '\t\_', __module[4:].replace('.py', '')
-
-    options.module = load_module(options.module)
-
-    if options.module is not False:
-        for _ in options.module:
-            print '\n(\033[36m' + _.MODULE_NAME + '\033[0m)\t>>======'
-            _.run(options)
-    print '\n'
+    florid_import_modules()
+    helper.Watcher()
+    threading.Thread(target=mod.spider.run, args=()).start()
+    threading.Thread(target=other_modules_call, args=()).start()
 
 
 if __name__ == '__main__':

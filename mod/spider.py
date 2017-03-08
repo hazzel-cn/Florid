@@ -1,9 +1,15 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 import os
 import requests
 import urlparse
+import lib.common as common
 from bs4 import BeautifulSoup
+import threading
 
 MODULE_NAME = 'spider'
+SESITIVE_SUFFIX = ['.zip']
 
 
 class Spider(object):
@@ -19,47 +25,61 @@ class Spider(object):
             os.makedirs('log/' + self.hostname + '/')
         self.txt = open('log/' + self.hostname + '/url_list.txt', 'w+')
 
-    def crawl(self):
-        # req = requests.Session()
-        # req.cookies['PHPSESSID'] = 'nfcl6csp2kenfh9asafmhce804'
+    def save_locker(self):
+        while common.SPIDER_END and common.TASK_QUEUE.qsize() > 0:
+            if common.LOCKER.acquire():
+                common.LOCKER.notifyAll()
+                common.LOCKER.release()
 
+    def crawl(self):
         while len(self.url_list) > 0:
-            r = requests.get(self.url_list[0])
+            if os.path.splitext(os.path.basename(self.url_list[0]))[1] in SESITIVE_SUFFIX:
+                common.SENSITIVE_LIST.append(self.url_list[0])
+                self.url_list.pop(0)
+
+            try:
+                r = requests.get(self.url_list[0])
+            except:
+                common.SENSITIVE_LIST.append(self.url_list[0])
+                self.url_list.pop(0)
+                continue
+
             if r.status_code != 404:
                 html_text = r.text
-            self.txt.writelines(self.url_list[0] + '\n')
+            self.txt.writelines(self.url_list[0].encode('utf-8') + '\n')
             self.soup = BeautifulSoup(html_text, 'html.parser')
 
             self.current_url = self.url_list[0]
-            self.obtmp = urlparse.urlparse(self.url_list[0])
-            self.current_url_dirname = os.path.dirname(self.current_url)
-            self.current_url_basename = os.path.basename(self.current_url)
-
-            if VERBOSE:
-                print '  ', self.url_list[0]
-            self.url_list.pop(0)
 
             for tag in self.soup.findAll('form', action=True):
                 url_new = urlparse.urljoin(self.current_url, tag['action'])
-                if self.netloc in url_new and url_new not in self.visited_list and '#' not in url_new:
+                if self.netloc.split('.')[-2] in urlparse.urlparse(
+                        url_new).netloc and url_new not in self.visited_list and '#' not in url_new:
                     self.url_list.append(url_new)
                     self.visited_list.append(url_new)
             for tag in self.soup.findAll('a', href=True):
                 url_new = urlparse.urljoin(self.current_url, tag['href'])
-                if self.netloc in url_new and url_new not in self.visited_list and '#' not in url_new and 'logout' not in url_new:
+                if self.netloc.split('.')[-2] in urlparse.urlparse(
+                        url_new).netloc and url_new not in self.visited_list and '#' not in url_new:
                     self.url_list.append(url_new)
                     self.visited_list.append(url_new)
 
+            if common.LOCKER.acquire():
+                common.TASK_QUEUE.put(self.current_url)
+                common.LOCKER.notify()
+                common.LOCKER.release()
+            self.url_list.pop(0)
+
+        common.SPIDER_END = True
+        # threading.Thread(target=self.save_locker, args=()).start()
         return True
 
 
 def init():
-    return True
+    return (True, 'SUCCESS')
 
 
-def run(options):
-    global VERBOSE
-    VERBOSE = options.verbose
+def run():
     print '[*] Running....'
-    a = Spider(options.url).crawl()
-    print '[*] Complete'
+    a = Spider(common.WebInfo.url).crawl()
+    # print '[*] Complete'

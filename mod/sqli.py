@@ -3,7 +3,6 @@
 import os
 import requests
 import urlparse
-import time
 import json
 import time
 import threading
@@ -90,18 +89,16 @@ def init():
             return 'Unknown Error'
 
 
-def run(options):
-    global VERBOSE
-    VERBOSE = options.verbose
+def run(url):
+    hostname = urlparse.urlparse(url).netloc
 
     urls = []
     urls_p = []
-    for _line in open('log/' + options.hostname + '/url_list.txt'):
+    for _line in open('log/' + hostname + '/url_list.txt'):
         _url = _line[:-1]
         if urlparse.urlparse(_url).query != '':
             if os.path.basename(_url).replace(urlparse.urlparse(_url).query, '').replace('?', '') not in urls_p:
-                if VERBOSE:
-                    print _url
+                print _url
                 urls.append(_url)
                 urls_p.append(os.path.basename(_url).replace(urlparse.urlparse(_url).query, '').replace('?', ''))
     print '[*] URL List Loaded.'
