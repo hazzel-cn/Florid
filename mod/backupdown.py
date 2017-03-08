@@ -66,10 +66,6 @@ def init():
 
 
 def run(url):
-    '''
-    Plan to add the function which can add suffix automatically. e.g: when input www.hazzel.cn, it should be rewritten to www.hazzel.cn/index.php
-    '''
-
     url = url.replace(urlparse.urlparse(url).query, '').replace('?', '')
     if urlparse.urlparse(url).path.endswith('/'):
         url = url + 'index.php'
