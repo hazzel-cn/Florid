@@ -19,17 +19,18 @@ PHPINFO_FILE = ['1.php', 'phpinfo.php', 'a.php', 'config.php', 'flag.php', '404.
                 'view.php']
 
 DIR_LIST = ['admin', 'flag', 'phpmyadmin', 'phpMyAdmin']
+FILE_LIST = ['.htaccess']
 
 
 def svn_check(url):
     re = ''
     r = requests.get(url + '.svn/')
     if r.status_code == 403:
-        re = re + '.svn/'
+        re = re + '.svn/ '
         for _ in SVN_DIR:
             r = requests.get(url + re + _)
             if r.status_code != 404:
-                re = re + _
+                re = re + _ + ' '
     ColorPrint.green(re),
 
 
@@ -46,7 +47,7 @@ def phpinfo_check(url):
     for _ in PHPINFO_FILE:
         r = requests.get(url + '/' + _)
         if r.status_code != 404:
-            re = re + ' ' + _
+            re = re + _ + ' '
 
     ColorPrint.green(re),
 
@@ -57,6 +58,15 @@ def dir_check(url):
         r = requests.get(url + '/' + _ + '/')
         if r.status_code != 404:
             re = re + ' ' + _
+    ColorPrint.green(re),
+
+
+def file_check(url):
+    re = ''
+    for _ in DIR_LIST:
+        r = requests.get(url + '/' + _)
+        if r.status_code != 404:
+            re = re + _ + ' '
     ColorPrint.green(re),
 
 
