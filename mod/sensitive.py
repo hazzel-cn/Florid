@@ -82,6 +82,7 @@ def run(url):
     task.append(threading.Thread(target=git_check, args=(url,)))
     task.append(threading.Thread(target=phpinfo_check, args=(url,)))
     task.append(threading.Thread(target=dir_check, args=(url,)))
+    task.append(threading.Thread(target=file_check, args=(url,)))
 
     for _ in task:
         _.start()
