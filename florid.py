@@ -20,7 +20,7 @@ sys.dont_write_bytecode = True
 
 florid_banner = {
     'version': '0.3.2 dev',
-    'update': '2017-03-08',
+    'update': '2017-03-07',
     'logo': '''
      _____  _            _     _
     |  ___|| | ___  _ __(_) __| |
@@ -109,7 +109,7 @@ def spider_module_call():
 def sqli_module_call():
     import mod.sqli
     mod.sqli.init()
-    mod.sqli.run(common.WebInfo.url)
+    mod.sqli.run()
 
 
 def other_modules_call():
