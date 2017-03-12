@@ -19,8 +19,8 @@ else:
 sys.dont_write_bytecode = True
 
 florid_banner = {
-    'version': '0.3.2 dev',
-    'update': '2017-03-08',
+    'version': '0.3.3 dev',
+    'update': '2017-03-12',
     'logo': '''
      _____  _            _     _
     |  ___|| | ___  _ __(_) __| |
@@ -85,7 +85,7 @@ def florid_import_modules():
     # Import modules from the list above && initialize every module
     print '__MODS__'
     for _ in common.WebInfo.modules:
-        print '\t\_%s\t' % _,
+        print '\t|_%s\t' % _,
         try:
             _m = __import__('mod.' + _, fromlist=["*.py"])
             _m_init_result = _m.init()
