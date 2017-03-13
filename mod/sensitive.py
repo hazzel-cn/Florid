@@ -7,7 +7,7 @@ import requests
 
 import lib.common as common
 
-if common.WebInfo.os == 'Win':
+if common.WebInfo.os == 'Windows':
     import lib.colorprint_win as ColorPrint
 else:
     import lib.colorprint_nix as ColorPrint
