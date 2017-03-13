@@ -2,11 +2,12 @@
 # -*- coding: utf-8 -*-
 
 import os
-import requests
 import urlparse
-import lib.common as common
+
+import requests
 from bs4 import BeautifulSoup
-import threading
+
+import lib.common as common
 
 MODULE_NAME = 'spider'
 SESITIVE_SUFFIX = ['.zip']
@@ -21,9 +22,9 @@ class Spider(object):
         self.url_list = [self.source_url]
         self.visited_list = [self.source_url]
 
-        if not os.path.exists('log/' + self.hostname + '/'):
-            os.makedirs('log/' + self.hostname + '/')
-        self.txt = open('log/' + self.hostname + '/url_list.txt', 'w+')
+        if not os.path.exists('log/' + self.netloc + '/'):
+            os.makedirs('log/' + self.netloc + '/')
+        self.txt = open('log/' + self.netloc + '/url_list.txt', 'w+')
 
     def save_locker(self):
         while common.SPIDER_END and common.TASK_QUEUE.qsize() > 0:
@@ -32,6 +33,7 @@ class Spider(object):
                 common.LOCKER.release()
 
     def crawl(self):
+        # print 'begin to crawl'
         while len(self.url_list) > 0:
             if os.path.splitext(os.path.basename(self.url_list[0]))[1] in SESITIVE_SUFFIX:
                 common.SENSITIVE_LIST.append(self.url_list[0])
@@ -40,6 +42,7 @@ class Spider(object):
             try:
                 r = requests.get(self.url_list[0])
             except:
+                print 'fail'
                 common.SENSITIVE_LIST.append(self.url_list[0])
                 self.url_list.pop(0)
                 continue
@@ -63,7 +66,7 @@ class Spider(object):
                         url_new).netloc and url_new not in self.visited_list and '#' not in url_new:
                     self.url_list.append(url_new)
                     self.visited_list.append(url_new)
-
+            # print 'Spider getting locker'
             if common.LOCKER.acquire():
                 common.TASK_QUEUE.put(self.current_url)
                 common.LOCKER.notify()

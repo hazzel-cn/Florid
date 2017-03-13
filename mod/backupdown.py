@@ -1,9 +1,17 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 import os
+import threading
 import urlparse
 
 import requests
+
+import lib.common as common
+
+if common.WebInfo.os == 'Win':
+    import lib.colorprint_win as ColorPrint
+else:
+    import lib.colorprint_nix as ColorPrint
 
 MODULE_NAME = 'backupdown'
 SUFFIX_ARRAY = ['.swp', '.swo', '.swn', '.swp4']
@@ -28,6 +36,7 @@ class VimDown(object):
                 if r.status_code == 200:
                     _f = open('log/' + self.hostname + '/' + self.basename + _, 'wb')
                     _f.write(r.content)
+                    ColorPrint.green('VIM')
                     return True
                 else:
                     pass
@@ -53,6 +62,7 @@ class GeditDown(object):
             if r.status_code == 200:
                 _f = open('log/' + self.hostname + '/' + self.basename + '~', 'wb')
                 _f.write(r.content)
+                ColorPrint.green('GEDIT')
                 return True
             else:
                 pass
@@ -66,13 +76,16 @@ def init():
 
 
 def run(url):
-    url = url.replace(urlparse.urlparse(url).query, '').replace('?', '')
-    if urlparse.urlparse(url).path.endswith('/'):
-        url = url + 'index.php'
-    if os.path.splitext(os.path.basename(url))[1] in INCLUDED_SUFFIX:
-        if VimDown(url).download() or GeditDown(url).download():
-            print 'Success'
-        else:
-            print 'Fail'
-    else:
-        print 'Not Fail'
+    u_obj = common.URL(url)
+    _u = u_obj.scheme + '://' + u_obj.netloc + u_obj.path + u_obj.filename
+    if _u not in common.BACKUPDOWN_LIST:
+        if os.path.splitext(_u)[1].lower() in INCLUDED_SUFFIX:
+            task = []
+            task.append(threading.Thread(target=VimDown(_u).download, args=()))
+            task.append(threading.Thread(target=GeditDown(_u).download, args=()))
+
+            for _ in task:
+                _.start()
+            for _ in task:
+                _.join()
+    print 'END'

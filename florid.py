@@ -1,17 +1,18 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import sys
+import datetime
 import glob
 import optparse
-import datetime
 import platform
+import sys
 import threading
-import lib.helper as helper
+
 import lib.common as common
+import lib.helper as helper
 import mod.spider
 
-if common.WebInfo.os == 'Win':
+if common.WebInfo.os == 'Windows':
     import lib.colorprint_win as ColorPrint
 else:
     import lib.colorprint_nix as ColorPrint
@@ -19,8 +20,8 @@ else:
 sys.dont_write_bytecode = True
 
 florid_banner = {
-    'version': '0.3.3 dev',
-    'update': '2017-03-12',
+    'version': '0.3.4 dev',
+    'update': '2017-03-13',
     'logo': '''
      _____  _            _     _
     |  ___|| | ___  _ __(_) __| |
@@ -85,7 +86,7 @@ def florid_import_modules():
     # Import modules from the list above && initialize every module
     print '__MODS__'
     for _ in common.WebInfo.modules:
-        print '\t|_%s\t' % _,
+        print '\t\_%s\t' % _,
         try:
             _m = __import__('mod.' + _, fromlist=["*.py"])
             _m_init_result = _m.init()
@@ -119,7 +120,7 @@ def other_modules_call():
                 url = common.TASK_QUEUE.get()
                 print '\n\tChecking... + %s' % url
                 for _ in common.WebInfo.modules_list:
-                    print '\t\t\_',
+                    print '\t\t|_',
                     ColorPrint.sky_blue(_)
                     print ' is running......\t',
                     _t = threading.Thread(target=common.WebInfo.modules_list[_].run, args=(url,))
@@ -135,7 +136,8 @@ def main():
     florid_init_env(florid_get_parse())
 
     florid_import_modules()
-    helper.Watcher()
+    if common.WebInfo.os != 'Windows':
+        helper.Watcher()
     threading.Thread(target=mod.spider.run, args=()).start()
     threading.Thread(target=other_modules_call, args=()).start()
 

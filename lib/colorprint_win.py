@@ -82,7 +82,7 @@ def dark_green(mess):
 # dark sky blue
 def dark_skyblue(mess):
     set_cmd_text_color(FOREGROUND_DARKSKYBLUE)
-    sys.stdout.write(mess[:-1])
+    sys.stdout.write(mess)
     reset_color()
 
 
@@ -90,7 +90,7 @@ def dark_skyblue(mess):
 # dark red
 def dark_red(mess):
     set_cmd_text_color(FOREGROUND_DARKRED)
-    sys.stdout.write(mess[:-1])
+    sys.stdout.write(mess)
     reset_color()
 
 
@@ -98,7 +98,7 @@ def dark_red(mess):
 # dark pink
 def dark_pink(mess):
     set_cmd_text_color(FOREGROUND_DARKPINK)
-    sys.stdout.write(mess[:-1])
+    sys.stdout.write(mess)
     reset_color()
 
 
@@ -106,7 +106,7 @@ def dark_pink(mess):
 # dark yellow
 def dark_yellow(mess):
     set_cmd_text_color(FOREGROUND_DARKYELLOW)
-    sys.stdout.write(mess[:-1])
+    sys.stdout.write(mess)
     reset_color()
 
 
@@ -114,7 +114,7 @@ def dark_yellow(mess):
 # dark white
 def dark_hite(mess):
     set_cmd_text_color(FOREGROUND_DARKWHITE)
-    sys.stdout.write(mess[:-1])
+    sys.stdout.write(mess)
     reset_color()
 
 
@@ -122,7 +122,7 @@ def dark_hite(mess):
 # dark gray
 def dark_gray(mess):
     set_cmd_text_color(FOREGROUND_DARKGRAY)
-    sys.stdout.write(mess[:-1])
+    sys.stdout.write(mess)
     reset_color()
 
 
@@ -130,7 +130,7 @@ def dark_gray(mess):
 # blue
 def blue(mess):
     set_cmd_text_color(FOREGROUND_BLUE)
-    sys.stdout.write(mess[:-1])
+    sys.stdout.write(mess)
     reset_color()
 
 
@@ -138,7 +138,7 @@ def blue(mess):
 # green
 def green(mess):
     set_cmd_text_color(FOREGROUND_GREEN)
-    sys.stdout.write(mess[:-1])
+    sys.stdout.write(mess)
     reset_color()
 
 
@@ -146,7 +146,7 @@ def green(mess):
 # sky blue
 def sky_blue(mess):
     set_cmd_text_color(FOREGROUND_SKYBLUE)
-    sys.stdout.write(mess[:-1])
+    sys.stdout.write(mess)
     reset_color()
 
 
@@ -154,7 +154,7 @@ def sky_blue(mess):
 # red
 def red(mess):
     set_cmd_text_color(FOREGROUND_RED)
-    sys.stdout.write(mess[:-1])
+    sys.stdout.write(mess)
     reset_color()
 
 
@@ -162,7 +162,7 @@ def red(mess):
 # pink
 def pink(mess):
     set_cmd_text_color(FOREGROUND_PINK)
-    sys.stdout.write(mess[:-1])
+    sys.stdout.write(mess)
     reset_color()
 
 
@@ -170,7 +170,7 @@ def pink(mess):
 # yellow
 def yellow(mess):
     set_cmd_text_color(FOREGROUND_YELLOW)
-    sys.stdout.write(mess[:-1])
+    sys.stdout.write(mess)
     reset_color()
 
 
@@ -178,7 +178,7 @@ def yellow(mess):
 # white
 def white(mess):
     set_cmd_text_color(FOREGROUND_WHITE)
-    sys.stdout.write(mess[:-1])
+    sys.stdout.write(mess)
     reset_color()
 
 
@@ -196,7 +196,7 @@ def white_black(mess):
 # white bkground and black text
 def white_black_2(mess):
     set_cmd_text_color(0xf0)
-    sys.stdout.write(mess[:-1])
+    sys.stdout.write(mess)
     reset_color()
 
 
@@ -204,5 +204,5 @@ def white_black_2(mess):
 # white bkground and black text
 def yellow_red(mess):
     set_cmd_text_color(BACKGROUND_YELLOW | FOREGROUND_RED)
-    sys.stdout.write(mess[:-1])
+    sys.stdout.write(mess)
     reset_color()

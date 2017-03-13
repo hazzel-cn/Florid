@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 import threading
-import urlparse
 
 import requests
 
@@ -14,60 +13,41 @@ else:
     import lib.colorprint_nix as ColorPrint
 
 SVN_DIR = ['wc.db', 'entries']
-
-PHPINFO_FILE = ['1.php', 'phpinfo.php', 'a.php', 'config.php', 'flag.php', '404.php', 'login.php', 'reg.php',
-                'view.php']
-
-DIR_LIST = ['admin', 'flag', 'phpmyadmin', 'phpMyAdmin']
-FILE_LIST = ['.htaccess']
+DIR_LIST = ['/admin/', '/flag/', '/phpmyadmin/', '/phpMyAdmin/', '/wp-admin/']
+FILE_LIST = ['.htaccess', '1.php', 'phpinfo.php', 'a.php', 'config.php',
+             'flag.php', '404.php', 'login.php', 'reg.php', 'view.php']
 
 
 def svn_check(url):
+    u = common.URL(url)
     re = ''
-    r = requests.get(url + '.svn/')
-    if r.status_code == 403:
-        re = re + '.svn/ '
+    check_url = u.value + '.svn/'
+    if requests.get(check_url).status_code != 404:
+        re = '.SVN/'
         for _ in SVN_DIR:
-            r = requests.get(url + re + _)
-            if r.status_code != 404:
+            if requests.get(check_url + _).status_code != 404:
                 re = re + _ + ' '
     ColorPrint.green(re),
 
 
 def git_check(url):
-    re = ''
-    r = requests.get(url + '.git/')
-    if r.status_code == 403:
-        re = re + '.git/'
-    ColorPrint.green(re),
-
-
-def phpinfo_check(url):
-    re = ''
-    for _ in PHPINFO_FILE:
-        r = requests.get(url + '/' + _)
-        if r.status_code != 404:
-            re = re + _ + ' '
-
-    ColorPrint.green(re),
-
-
-def dir_check(url):
-    re = ''
-    for _ in DIR_LIST:
-        r = requests.get(url + '/' + _ + '/')
-        if r.status_code != 404:
-            re = re + ' ' + _
-    ColorPrint.green(re),
+    u = common.URL(url)
+    if requests.get(u.value + '.git/').status_code != 404:
+        ColorPrint.green('.GIT/'),
 
 
 def file_check(url):
-    re = ''
+    u = common.URL(url)
+    for _ in FILE_LIST:
+        if requests.get(u.value + _).status_code != 404:
+            ColorPrint.green(_),
+
+
+def dir_check(url):
+    u = common.URL(url)
     for _ in DIR_LIST:
-        r = requests.get(url + '/' + _)
-        if r.status_code != 404:
-            re = re + _ + ' '
-    ColorPrint.green(re),
+        if requests.get(u.value + _[1:]).status_code != 404:
+            ColorPrint.green(_),
 
 
 def init():
@@ -75,23 +55,27 @@ def init():
 
 
 def run(url):
-    url = url.replace(urlparse.urlparse(url).path.split('/')[-1], '')
+    u_obj = common.URL(url)
+    tmp_path_list = u_obj.path[1:-1].split('/')
+    tmp_full_path_list = []
+    tmp_url = u_obj.netloc + '/'
+    for i in xrange(len(tmp_path_list)):
+        tmp_url = tmp_url + tmp_path_list[i] + '/'
+        tmp_full_path_list.append(tmp_url)
 
     task = []
-    task.append(threading.Thread(target=svn_check, args=(url,)))
-    task.append(threading.Thread(target=git_check, args=(url,)))
-    task.append(threading.Thread(target=phpinfo_check, args=(url,)))
-    task.append(threading.Thread(target=dir_check, args=(url,)))
-    task.append(threading.Thread(target=file_check, args=(url,)))
+    for _u in tmp_full_path_list:
+        if _u not in common.SENSITIVE_LIST:
+            if common.URL(_u).type == 'D':
+                common.SENSITIVE_LIST.append(_u)
+                task.append(threading.Thread(target=svn_check, args=(_u,)))
+                task.append(threading.Thread(target=git_check, args=(_u,)))
+                task.append(threading.Thread(target=dir_check, args=(_u,)))
+                task.append(threading.Thread(target=file_check, args=(_u,)))
 
     for _ in task:
         _.start()
     for _ in task:
         _.join()
 
-    '''
-    svn_check(url)
-    git_check(url)
-    phpinfo_check(url)
-    '''
     print 'END'
