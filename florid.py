@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
-
+import os
 import datetime
 import glob
 import optparse
@@ -136,8 +136,10 @@ def main():
     florid_init_env(florid_get_parse())
 
     florid_import_modules()
-    if common.WebInfo.os != 'Windows':
-        helper.Watcher()
+    if common.WebInfo.os == 'Windows':
+        helper.Watcher_Windows(os.getpid())
+    else:
+        helper.Watcher_Linux()
     threading.Thread(target=mod.spider.run, args=()).start()
     threading.Thread(target=other_modules_call, args=()).start()
 
