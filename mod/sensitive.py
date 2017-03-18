@@ -15,7 +15,8 @@ else:
 SVN_DIR = ['wc.db', 'entries']
 DIR_LIST = ['/admin/', '/flag/', '/phpmyadmin/', '/phpMyAdmin/', '/wp-admin/']
 FILE_LIST = ['.htaccess', '1.php', 'phpinfo.php', 'a.php', 'config.php',
-             'flag.php', '404.php', 'login.php', 'reg.php', 'view.php']
+             'flag.php', '404.php', 'login.php', 'reg.php', 'view.php',
+             'www.zip', 'readme.md', 'README.md']
 
 
 def svn_check(url):
