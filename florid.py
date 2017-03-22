@@ -1,9 +1,9 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
-import os
 import datetime
 import glob
 import optparse
+import os
 import platform
 import sys
 import threading
@@ -126,6 +126,7 @@ def other_modules_call():
                     _t = threading.Thread(target=common.WebInfo.modules_list[_].run, args=(url,))
                     _t.start()
                     _t.join()
+                    print '[END]'
                 common.LOCKER.release()
             else:
                 common.LOCKER.wait()

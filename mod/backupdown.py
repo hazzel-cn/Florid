@@ -34,7 +34,7 @@ class VimDown(object):
             try:
                 r = requests.get(url_down, timeout=3)
                 if r.status_code == 200:
-                    _f = open('log/' + self.hostname + '/' + self.basename + _, 'wb')
+                    _f = open(common.LOG_DICT + self.basename + _, 'wb')
                     _f.write(r.content)
                     ColorPrint.green('VIM')
                     return True
@@ -60,9 +60,35 @@ class GeditDown(object):
         try:
             r = requests.get(url_down)
             if r.status_code == 200:
-                _f = open('log/' + self.hostname + '/' + self.basename + '~', 'wb')
+                _f = open(common.LOG_DICT + self.basename + '~', 'wb')
                 _f.write(r.content)
                 ColorPrint.green('GEDIT')
+                return True
+            else:
+                pass
+        except:
+            pass
+        return False
+
+
+class Backdown(object):
+    def __init__(self, check_url):
+        self.check_url = check_url
+        self.ob = urlparse.urlparse(self.check_url)
+        self.scheme = self.ob.scheme
+        self.hostname = self.ob.hostname
+        self.dirname = os.path.dirname(self.check_url)
+        self.basename = os.path.basename(self.check_url).replace(urlparse.urlparse(self.check_url).query, '').replace(
+            '?', '')
+
+    def download(self):
+        url_down = self.check_url + '~'
+        try:
+            r = requests.get(url_down)
+            if r.status_code == 200:
+                _f = open(common.LOG_DICT + self.basename + '.bak', 'wb')
+                _f.write(r.content)
+                ColorPrint.green('BAK')
                 return True
             else:
                 pass
@@ -88,4 +114,4 @@ def run(url):
                 _.start()
             for _ in task:
                 _.join()
-    print 'END'
+    return True

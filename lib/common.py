@@ -20,6 +20,9 @@ PLATFORM_WIN = True
 SENSITIVE_LIST = []
 BACKUPDOWN_LIST = []
 
+LOG_FILE = ''
+LOG_DICT = ''
+
 
 class WebInfo(object):
     modules = []

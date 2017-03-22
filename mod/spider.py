@@ -24,7 +24,10 @@ class Spider(object):
 
         if not os.path.exists('log/' + self.netloc.split(':')[0] + '/'):
             os.makedirs('log/' + self.netloc.split(':')[0] + '/')
-        self.txt = open('log/' + self.netloc.split(':')[0] + '/url_list.txt', 'w+')
+        common.LOG_DICT = 'log/' + self.netloc.split(':')[0] + '/'
+        common.LOG_FILE = 'log/' + self.netloc.split(':')[0] + '/url_list.txt'
+
+        self.txt = open(common.LOG_FILE, 'w+')
 
     def save_locker(self):
         while common.SPIDER_END and common.TASK_QUEUE.qsize() > 0:

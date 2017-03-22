@@ -79,4 +79,4 @@ def run(url):
     for _ in task:
         _.join()
 
-    print 'END'
+    return True
