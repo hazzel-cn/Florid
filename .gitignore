@@ -92,3 +92,5 @@ ENV/
 
 # Log
 log/*
+
+.DS_Store
