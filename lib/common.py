@@ -36,13 +36,14 @@ class WebInfo(object):
 
 class URL(object):
     def __init__(self, url):
+        if not url.startswith('http'):
+            url = 'http://' + url
 
         if url.endswith(urlparse.urlparse(url).netloc):
             self.value = url + '/'
         else:
             self.value = url
-        if not url.startswith('http'):
-            self.value = 'http://' + self.value
+
 
         parsed_url = urlparse.urlparse(self.value)
 
@@ -53,7 +54,7 @@ class URL(object):
 
         self.scheme = parsed_url.scheme
         self.netloc = parsed_url.netloc
-        self.file = parsed_url.path.split('/')
+        # self.file = path_list[-1]
 
         if self.value.endswith('/'):
             self.type = 'D'

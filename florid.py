@@ -20,8 +20,8 @@ else:
 sys.dont_write_bytecode = True
 
 florid_banner = {
-    'version': '0.3.4 dev',
-    'update': '2017-03-13',
+    'version': '0.3.5 dev',
+    'update': '2017-03-30',
     'logo': '''
      _____  _            _     _
     |  ___|| | ___  _ __(_) __| |
@@ -87,12 +87,14 @@ def florid_import_modules():
     print '__MODS__'
     for _ in common.WebInfo.modules:
         print '\t\_%s\t' % _,
+        sys.stdout.flush()
         try:
             _m = __import__('mod.' + _, fromlist=["*.py"])
             _m_init_result = _m.init()
             if _m_init_result[0]:
                 ColorPrint.green(_m_init_result[1] + '\n')
                 common.WebInfo.modules_list[_] = _m
+                sys.stdout.flush()
             else:
                 ColorPrint.red(_m_init_result[1])
                 continue
@@ -123,10 +125,12 @@ def other_modules_call():
                     print '\t\t|_',
                     ColorPrint.sky_blue(_)
                     print ' is running......\t',
+                    sys.stdout.flush()
                     _t = threading.Thread(target=common.WebInfo.modules_list[_].run, args=(url,))
                     _t.start()
                     _t.join()
                     print '[END]'
+                    sys.stdout.flush()
                 common.LOCKER.release()
             else:
                 common.LOCKER.wait()
@@ -141,8 +145,8 @@ def main():
         helper.Watcher_Windows(os.getpid())
     else:
         helper.Watcher_Linux()
-    threading.Thread(target=mod.spider.run, args=()).start()
     threading.Thread(target=other_modules_call, args=()).start()
+    threading.Thread(target=mod.spider.run, args=()).start()
 
 
 if __name__ == '__main__':

@@ -1,8 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-import os
+import sys
 import threading
-import urlparse
 
 import requests
 
@@ -18,83 +17,53 @@ SUFFIX_ARRAY = ['.swp', '.swo', '.swn', '.swp4']
 INCLUDED_SUFFIX = ['.php', '.asp']
 
 
-class VimDown(object):
-    def __init__(self, check_url):
-        self.check_url = check_url
-        self.ob = urlparse.urlparse(self.check_url)
-        self.scheme = self.ob.scheme
-        self.hostname = self.ob.hostname
-        self.dirname = os.path.dirname(self.check_url)
-        self.basename = os.path.basename(self.check_url).replace(urlparse.urlparse(self.check_url).query, '').replace(
-            '?', '')
-
-    def download(self):
-        for _ in SUFFIX_ARRAY:
-            url_down = self.dirname + '/.' + self.basename + _
-            try:
-                r = requests.get(url_down, timeout=3)
-                if r.status_code == 200:
-                    _f = open(common.LOG_DICT + self.basename + _, 'wb')
-                    _f.write(r.content)
-                    ColorPrint.green('VIM')
-                    return True
-                else:
-                    pass
-            except:
-                pass
-        return False
+def do_vim_down(url, filename, suffix):
+    try:
+        r = requests.get(url, timeout=3)
+        if r.status_code != 404:
+            fp = open(common.LOG_DICT + filename + suffix, 'wb')
+            fp.write(r.content)
+            fp.close()
+            ColorPrint.green('VIM ')
+            sys.stdout.flush()
+    except:
+        pass
 
 
-class GeditDown(object):
-    def __init__(self, check_url):
-        self.check_url = check_url
-        self.ob = urlparse.urlparse(self.check_url)
-        self.scheme = self.ob.scheme
-        self.hostname = self.ob.hostname
-        self.dirname = os.path.dirname(self.check_url)
-        self.basename = os.path.basename(self.check_url).replace(urlparse.urlparse(self.check_url).query, '').replace(
-            '?', '')
-
-    def download(self):
-        url_down = self.check_url + '~'
-        try:
-            r = requests.get(url_down)
-            if r.status_code == 200:
-                _f = open(common.LOG_DICT + self.basename + '~', 'wb')
-                _f.write(r.content)
-                ColorPrint.green('GEDIT')
-                return True
-            else:
-                pass
-        except:
-            pass
-        return False
+def vim_down(u_obj):
+    for suffix in SUFFIX_ARRAY:
+        url_down = u_obj.scheme + '://' + u_obj.netloc + u_obj.path + '.' + u_obj.filename + suffix
+        t = threading.Thread(target=do_vim_down, args=(url_down, u_obj.filename, suffix))
+        t.start()
+        t.join()
 
 
-class Backdown(object):
-    def __init__(self, check_url):
-        self.check_url = check_url
-        self.ob = urlparse.urlparse(self.check_url)
-        self.scheme = self.ob.scheme
-        self.hostname = self.ob.hostname
-        self.dirname = os.path.dirname(self.check_url)
-        self.basename = os.path.basename(self.check_url).replace(urlparse.urlparse(self.check_url).query, '').replace(
-            '?', '')
+def gedit_down(u_obj):
+    url_down = u_obj.scheme + '://' + u_obj.netloc + u_obj.path + u_obj.filename + '~'
+    try:
+        r = requests.get(url_down)
+        if r.status_code != 404:
+            _f = open(common.LOG_DICT + u_obj.filename + '~', 'wb')
+            _f.write(r.content)
+            ColorPrint.green('GEDIT ')
+            sys.stdout.flush()
+            return True
+    except:
+        pass
 
-    def download(self):
-        url_down = self.check_url + '~'
-        try:
-            r = requests.get(url_down)
-            if r.status_code == 200:
-                _f = open(common.LOG_DICT + self.basename + '.bak', 'wb')
-                _f.write(r.content)
-                ColorPrint.green('BAK')
-                return True
-            else:
-                pass
-        except:
-            pass
-        return False
+
+def back_down(u_obj):
+    url_down = u_obj.scheme + '://' + u_obj.netloc + u_obj.path + u_obj.filename + '.bak'
+    try:
+        r = requests.get(url_down)
+        if r.status_code != 404:
+            _f = open(common.LOG_DICT + u_obj.filename + '.bak', 'wb')
+            _f.write(r.content)
+            ColorPrint.green('BAK ')
+            sys.stdout.flush()
+            return True
+    except:
+        pass
 
 
 def init():
@@ -103,13 +72,13 @@ def init():
 
 def run(url):
     u_obj = common.URL(url)
-    _u = u_obj.scheme + '://' + u_obj.netloc + u_obj.path + u_obj.filename
-    if _u not in common.BACKUPDOWN_LIST:
-        if os.path.splitext(_u)[1].lower() in INCLUDED_SUFFIX:
+    if u_obj.type == 'F' and u_obj.value not in common.BACKUPDOWN_LIST:
+        common.BACKUPDOWN_LIST.append(u_obj.value)
+        if '.' + u_obj.filename.split('.')[-1].lower() in INCLUDED_SUFFIX:
             task = []
-            task.append(threading.Thread(target=VimDown(_u).download, args=()))
-            task.append(threading.Thread(target=GeditDown(_u).download, args=()))
-
+            task.append(threading.Thread(target=vim_down, args=(u_obj,)))
+            task.append(threading.Thread(target=gedit_down, args=(u_obj,)))
+            task.append(threading.Thread(target=back_down, args=(u_obj,)))
             for _ in task:
                 _.start()
             for _ in task:

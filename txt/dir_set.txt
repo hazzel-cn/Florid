@@ -1,0 +1,5 @@
+/admin/
+/flag/
+/phpmyadmin/
+/phpMyAdmin/
+/wp-admin/
