@@ -37,7 +37,7 @@ def file_check(u):
     for _ in fp:
         if _ == '\n':
             continue
-        t = threading.Thread(target=check_and_print, args=(u.value, _.replace('\n', '')))
+        t = threading.Thread(target=check_and_print, args=(u.value, _.replace('\n', ''), u.path))
         t.setDaemon(True)
         t.start()
     fp.close()
@@ -48,21 +48,21 @@ def dir_check(u):
     for _ in fp:
         if _ == '\n':
             continue
-        t = threading.Thread(target=check_and_print, args=(u.value, _.replace('\n', '')))
+        t = threading.Thread(target=check_and_print, args=(u.value, _.replace('\n', ''), u.path))
         t.setDaemon(True)
         t.start()
         t.join()
     fp.close()
 
 
-def check_and_print(head, tail):
+def check_and_print(head, tail, path):
     if tail.startswith('/'):
         req_u = head + tail[1:]
     else:
         req_u = head + tail
 
     if requests.get(req_u).status_code != 404:
-        ColorPrint.green(tail + ' ')
+        ColorPrint.green(path + tail + ' ; ')
         sys.stdout.flush()
 
 
