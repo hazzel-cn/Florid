@@ -62,7 +62,7 @@ def check_and_print(head, tail, path):
         req_u = head + tail
 
     if requests.get(req_u).status_code != 404:
-        ColorPrint.green(path + tail + ' ; ')
+        ColorPrint.green(path + tail + '  ')
         sys.stdout.flush()
 
 
