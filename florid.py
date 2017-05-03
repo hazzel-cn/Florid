@@ -1,27 +1,25 @@
-#! /usr/bin/env python
-# -*- coding: utf-8 -*-
-import datetime
-import glob
-import optparse
-import os
-import platform
+import re
 import sys
+import glob
+import datetime
+import optparse
 import threading
+import lib.common
+import lib.processbar
+import core.spider
+import core.helper
+import core.prepare
+import core.checker
+import core.importer
+import core.distributor
 
-import lib.common as common
-import lib.helper as helper
-import mod.spider
-
-if common.WebInfo.os == 'Windows':
-    import lib.colorprint_win as ColorPrint
-else:
-    import lib.colorprint_nix as ColorPrint
-
+reload(sys)
+sys.setdefaultencoding('utf8')
 sys.dont_write_bytecode = True
 
 florid_banner = {
-    'version': '0.3.5 dev',
-    'update': '2017-03-30',
+    'version': '2.0.0 dev',
+    'update': '2017-04-26',
     'logo': '''
      _____  _            _     _
     |  ___|| | ___  _ __(_) __| |
@@ -50,103 +48,62 @@ def florid_get_parse():
     return options
 
 
-def florid_init_env(options):
-    common.WebInfo.os = platform.system()
+def florid_init(options):
+    # The URL to be checked at first
+    lib.common.SOURCE_URL = options.url
 
-    # target URL
-    common.WebInfo.url = ''
-    if options.url is not None:
-        if not options.url.startswith('http'):
-            common.WebInfo.url = 'http://' + options.url
-        else:
-            common.WebInfo.url = options.url
-
-    # Modules array
-    common.WebInfo.modules = []
-    if options.modules is not None:
-        common.WebInfo.modules = options.modules.replace(' ', '').split(',')
-
-    # Verbose
-    common.WebInfo.verbose = options.verbose
-
-    return common.WebInfo
+    if options.modules == 'ALL':
+        for __file_name in glob.glob('mod/phase2/*.py'):
+            if '__init__' not in __file_name:
+                lib.common.COMMAND_SET['module_list'].append(
+                    re.findall('(\w+)\.pyc?$', __file_name)[0])
+                # print lib.common.COMMAND_SET['module_list']
+                # exit()
+                # __file_name.split('/')[-1].replace('.pyc', '').replace('.py', ''))
 
 
-def florid_import_modules():
-    if common.WebInfo.modules is None:
-        return False
-    # Load modules list
-    if 'ALL' in common.WebInfo.modules:
-        common.WebInfo.modules.remove('ALL')
-        for __module in glob.glob('mod/*.py'):
-            if '__init__' not in __module:
-                common.WebInfo.modules.append(__module[4:].replace('.py', ''))
-        common.WebInfo.modules.remove('spider')
-        common.WebInfo.modules.remove('sqli')
-    # Import modules from the list above && initialize every module
-    print '__MODS__'
-    for _ in common.WebInfo.modules:
-        print '\t\_%s\t' % _,
-        sys.stdout.flush()
-        try:
-            _m = __import__('mod.' + _, fromlist=["*.py"])
-            _m_init_result = _m.init()
-            if _m_init_result[0]:
-                ColorPrint.green(_m_init_result[1] + '\n')
-                common.WebInfo.modules_list[_] = _m
-                sys.stdout.flush()
-            else:
-                ColorPrint.red(_m_init_result[1])
-                continue
-        except:
-            pass
-    print '\n'
-    return common.WebInfo.modules_list
+def florid_organize():
+    if lib.common.OS == 'WIN':
+        import os
+        core.helper.WatcherWin(os.getpid())
+    else:
+        core.helper.WatcherNix()
 
+    core.prepare.import_modules_phase_one()
+    core.prepare.run_modules_phase_one()
 
-def spider_module_call():
-    import mod.spider
-    threading.Thread(target=mod.spider.run, args=()).start()
+    core.importer.import_modules_phase_two()
 
+    t_spider = threading.Thread(target=core.spider.Spider(lib.common.SOURCE_URL).run, args=())
+    t_distributor = threading.Thread(target=core.distributor.consume, args=())
+    t_processbar = threading.Thread(target=lib.processbar.run, args=())
+    t_checker = threading.Thread(target=core.checker.run, args=())
 
-def sqli_module_call():
-    import mod.sqli
-    mod.sqli.init()
-    mod.sqli.run(common.WebInfo.url)
+    t_processbar.setDaemon(True)
+    t_processbar.start()
 
+    # t_checker.setDaemon(True)
+    t_checker.start()
 
-def other_modules_call():
-    while not common.SPIDER_END or common.TASK_QUEUE.qsize() > 0:
-        if common.LOCKER.acquire():
-            if common.TASK_QUEUE.qsize() > 0:
-                url = common.TASK_QUEUE.get()
-                print '\n\tChecking... + %s' % url
-                for _ in common.WebInfo.modules_list:
-                    print '\t\t|_',
-                    ColorPrint.sky_blue(_)
-                    print ' is running......\t',
-                    sys.stdout.flush()
-                    _t = threading.Thread(target=common.WebInfo.modules_list[_].run, args=(url,))
-                    _t.start()
-                    _t.join()
-                    print '[END]'
-                    sys.stdout.flush()
-                common.LOCKER.release()
-            else:
-                common.LOCKER.wait()
+    t_spider.start()
+    t_distributor.start()
+    t_spider.join()
+    t_distributor.join()
+
+    # Print the result
+    # for __module_name in lib.common.MODULE_NAME_SET:
+    #     print lib.common.RESULT_DIRECROTY[__module_name]
+
+    t_checker.join()
+    lib.common.SCAN_DONE_FLAG = True
 
 
 def main():
     florid_show_banner()
-    florid_init_env(florid_get_parse())
-
-    florid_import_modules()
-    if common.WebInfo.os == 'Windows':
-        helper.Watcher_Windows(os.getpid())
-    else:
-        helper.Watcher_Linux()
-    threading.Thread(target=other_modules_call, args=()).start()
-    threading.Thread(target=mod.spider.run, args=()).start()
+    florid_init(florid_get_parse())
+    florid_organize()
+    print '\n[!] Finished.\n'
+    exit()
 
 
 if __name__ == '__main__':

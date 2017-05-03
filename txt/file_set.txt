@@ -11,3 +11,4 @@ view.php
 www.zip
 readme.md
 README.md
+robots.txt

@@ -1,71 +1,76 @@
-import Queue
+# coding=utf-8
+# Some common configuration information here
+# Sharing things here
 import platform
-import threading
-import urlparse
-
-import requests
-
-# Global Variety
-
-LOCKER = threading.Condition()
-SPIDER_END = False
-TASK_QUEUE = Queue.Queue()
-requests.keep_alive = False
-
-PLATFORM_WIN = True
-# True for Win
-# False for Linux or MacOS
+import Queue
+import sys
+import lib.urlentity
 
 
-SENSITIVE_LIST = []
-BACKUPDOWN_LIST = []
+# The URL to be checked
+SOURCE_URL = ''
 
-LOG_FILE = ''
-LOG_DICT = ''
+# The type of OS which the scripts are being exacuted on
+OS = 'WIN' if platform.system() == 'Windows' else "NIX"
 
+# The absolute address of the main script - florid.py
+PROJECT_PATH = sys.path[0]
 
-class WebInfo(object):
-    modules = []
-    modules_list = {}
-    url = ''
-    os = platform.system()
+# The queue of all urls to be checked
+URL_QUEUE = Queue.Queue()
 
-    def __init__(self):
-        pass
+# The queue of url which on identify an address
+PATH_QUEUE = Queue.Queue()
 
+# The set of path
+PATH_SET = []
 
-class URL(object):
-    def __init__(self, url):
-        if not url.startswith('http'):
-            url = 'http://' + url
+# The set of objects of imported mudiles for phase1
+MODULE_OBJ_SET_PRE = []
 
-        if url.endswith(urlparse.urlparse(url).netloc):
-            self.value = url + '/'
-        else:
-            self.value = url
+# The set of name of imported modules for phase1
+MODULE_NAME_SET_PRE = []
 
+# The set of objects of imported modules from 'mod'
+MODULE_OBJ_SET = []
 
-        parsed_url = urlparse.urlparse(self.value)
+# The set of name of imported modules from 'mod'
+MODULE_NAME_SET = []
 
-        path_list = parsed_url.path.split('/')
-        query_list = parsed_url.query.split('&')
-        while '' in path_list:
-            path_list.remove('')
+# The directory
+MODULE_DIRECTORY = {}
 
-        self.scheme = parsed_url.scheme
-        self.netloc = parsed_url.netloc
-        # self.file = path_list[-1]
+# The directory of an args from command line
+COMMAND_SET = {
+    'module_list': []
+}
 
-        if self.value.endswith('/'):
-            self.type = 'D'
-            self.filename = ''
-        else:
-            self.type = 'F'
-            self.filename = path_list[-1]
+# The count of urls to be checked
+URL_COUNT = 0
 
-        self.path = parsed_url.path.replace(self.filename, '')
-        self.query = {}
-        if query_list != ['']:
-            for _ in query_list:
-                self.query[_.split('=')[0]] = _.split('=')[1]
-        return None
+# The sharing directory which provides each module with the ability of requesting for data in other modules.
+SHARING_DICTIONARY = {
+    # '$module_info': SOMETHING',
+}
+
+# The directory of result of the check modules
+RESULT_DIRECROTY = {
+    # '$module_result': []
+}
+
+# The directory to count the number of done task for each module
+CHECKED_COUNT = {
+
+}
+
+# Current URL
+CURRENT_URL = ''
+
+# All done count
+ALL_DOWN_COUNT = 0
+
+# The flag to identify whether the work of spider has done
+SPIDER_DONE_FLAG = False
+
+# The flag to identify whether the scan work has finished
+SCAN_DONE_FLAG = False
