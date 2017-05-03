@@ -1,6 +1,10 @@
 # Florid Scanner
 An active scanner for CTF Game
 
+Only tested on MacOS. 
+
+Some time is needed to make it works properly on Windows and Linux.
+
 ### Usage:
 
 ```
@@ -8,7 +12,7 @@ python florid.py -h
 python florid.py -u "http://testphp.vulnweb.com/product.php?pic=1" -m ALL
 ```
 
-:![](DOCUMENT/show.gif)
+Gif![](DOCUMENT/show.gif)
 
 ### Tips
 
