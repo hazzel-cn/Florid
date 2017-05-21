@@ -1,25 +1,26 @@
+import datetime
+import glob
+import optparse
 import re
 import sys
-import glob
-import datetime
-import optparse
 import threading
+
+import core.checker
+import core.distributor
+import core.helper
+import core.importer
+import core.prepare
+import core.spider
 import lib.common
 import lib.processbar
-import core.spider
-import core.helper
-import core.prepare
-import core.checker
-import core.importer
-import core.distributor
 
 reload(sys)
 sys.setdefaultencoding('utf8')
 sys.dont_write_bytecode = True
 
 florid_banner = {
-    'version': '2.0.0 dev',
-    'update': '2017-04-26',
+    'version': '2.2.0 dev',
+    'update': '2017-05-21',
     'logo': '''
      _____  _            _     _
     |  ___|| | ___  _ __(_) __| |
@@ -54,12 +55,11 @@ def florid_init(options):
 
     if options.modules == 'ALL':
         for __file_name in glob.glob('mod/phase2/*.py'):
-            if '__init__' not in __file_name:
-                lib.common.COMMAND_SET['module_list'].append(
-                    re.findall('(\w+)\.pyc?$', __file_name)[0])
-                # print lib.common.COMMAND_SET['module_list']
+            if '__init__' not in __file_name and 'pyc' not in __file_name:
+                # print __file_name, re.findall('.*(/|\\\\)(.+)\.py$', __file_name)[0][1]
                 # exit()
-                # __file_name.split('/')[-1].replace('.pyc', '').replace('.py', ''))
+                lib.common.COMMAND_SET['module_list'].append(
+                    re.findall('.*(/|\\\\)(.+)\.py$', __file_name)[0][1])
 
 
 def florid_organize():
@@ -69,9 +69,11 @@ def florid_organize():
     else:
         core.helper.WatcherNix()
 
+    # Run modules for phase one:
     core.prepare.import_modules_phase_one()
     core.prepare.run_modules_phase_one()
 
+    # Import modules for phase two:
     core.importer.import_modules_phase_two()
 
     t_spider = threading.Thread(target=core.spider.Spider(lib.common.SOURCE_URL).run, args=())
@@ -89,10 +91,6 @@ def florid_organize():
     t_distributor.start()
     t_spider.join()
     t_distributor.join()
-
-    # Print the result
-    # for __module_name in lib.common.MODULE_NAME_SET:
-    #     print lib.common.RESULT_DIRECROTY[__module_name]
 
     t_checker.join()
     lib.common.SCAN_DONE_FLAG = True

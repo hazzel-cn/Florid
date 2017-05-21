@@ -1,5 +1,7 @@
-/admin/
 /flag/
+/admin/
 /phpmyadmin/
-/phpMyAdmin/
+/phpMyadmin/
+/manage/
 /wp-admin/
+/kindeditor/

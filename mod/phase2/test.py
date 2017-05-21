@@ -1,6 +1,6 @@
 import lib.common
 
-MODULE_NAME = str(__file__).split('/')[-1].split('\\')[-1].replace('.pyc', '').replace('.py', '')
+MODULE_NAME = 'test'
 
 
 def init():

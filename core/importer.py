@@ -1,12 +1,12 @@
 # coding=utf-8
 
-import lib.common
 import lib.colorprint
+import lib.common
 
 
 def import_modules_phase_two():
     for __module_name in lib.common.COMMAND_SET['module_list']:
-        lib.colorprint.color().sky_blue('> [%s]\t' % __module_name)
+        lib.colorprint.color().sky_blue('>[2] %s\t' % __module_name)
         try:
             __module_obj = __import__('mod.phase2.' + __module_name, fromlist=["*.py"])
 
@@ -25,4 +25,4 @@ def import_modules_phase_two():
         except Exception, e:
             lib.colorprint.color().red(str(e) + '\n')
             pass
-    lib.colorprint.color().green('\nImportation Done\n')
+    lib.colorprint.color().green('- Importation Done\n\n')

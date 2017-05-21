@@ -1,11 +1,13 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 import threading
-import requests
-import lib.common
-import lib.colorprint
 
-MODULE_NAME = str(__file__).split('/')[-1].split('\\')[-1].replace('.pyc', '').replace('.py', '')
+import requests
+
+import lib.colorprint
+import lib.common
+
+MODULE_NAME = 'backupdown'
 SUFFIX_ARRAY = ['.swp', '.swo', '.swn', '.swp4']
 INCLUDED_SUFFIX = ['.php', '.asp']
 CHECKED_URL_OBJ_SET = []

@@ -1,10 +1,12 @@
-import lib.common
-import requests
-import bs4
-import lib.urlentity
 import os
 import urlparse
+
+import bs4
+import requests
+
 import lib.colorprint
+import lib.common
+import lib.urlentity
 
 
 class Spider(object):
@@ -64,6 +66,11 @@ class Spider(object):
         lib.colorprint.color().blue('=' * 40 + '\n')
         # lib.colorprint.color().blue(' ' * 10 + '*' * 20 + ' ' * 10 + '\n')
         lib.colorprint.color().blue('=' * 40 + '\n')
+
+        lib.colorprint.color().green('[Site Info]' + '\n')
+        for _m_name in lib.common.MODULE_NAME_SET_PRE:
+            lib.colorprint.color().green(' + ' + lib.common.RESULT_DIRECROTY[_m_name][0] + '\n')
+            # print len(lib.common.RESULT_DIRECROTY[_m_name]), type(lib.common.RESULT_DIRECROTY[_m_name])
         lib.common.SPIDER_DONE_FLAG = True
 
         # pprint.pprint(waiting_list)

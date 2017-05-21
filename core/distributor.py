@@ -1,15 +1,15 @@
 # coding=utf-8
 # The file distribute the URL to modules
-import lib.common
 import threading
-import lib.urlentity
+
 import lib.colorprint
+import lib.common
+import lib.urlentity
 
 
 def distribute_url(url_obj):
     for __module_name in lib.common.MODULE_DIRECTORY:
         threading.Thread(target=lib.common.MODULE_DIRECTORY[__module_name].run, args=(url_obj,)).start()
-
 
 
 def distribute_path(path_obj):

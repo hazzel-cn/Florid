@@ -1,11 +1,15 @@
+flag.php
+fl4g.php
+login.php
+upload.php
+uploads.php
+manage.php
 .htaccess
 1.php
 phpinfo.php
 a.php
 config.php
-flag.php
 404.php
-login.php
 reg.php
 view.php
 www.zip

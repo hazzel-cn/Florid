@@ -3,12 +3,14 @@
 # Tips: Only the URLs which the type of is 'D' will be checked here.
 
 import threading
+
 import requests
-import lib.common
+
 import lib.colorprint
+import lib.common
 
 SVN_DIR = ['wc.db', 'entries']
-MODULE_NAME = str(__file__).split('/')[-1].split('\\')[-1].replace('.pyc', '').replace('.py', '')
+MODULE_NAME = 'sensitive'
 
 
 class SvnCheck(object):
@@ -85,7 +87,7 @@ class DirCheck(object):
         for __file in fp:
             if __file == '\n':
                 continue
-            # print self.url_obj.value[:-1] + __file
+            # print self.url_obj.value[:-1] + __file.replace('\n','')
             t = threading.Thread(target=self.__do_check, args=(self.url_obj.value[:-1] + __file.replace('\n', ''), ))
             tasks.append(t)
         for __t in tasks:
