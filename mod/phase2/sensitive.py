@@ -99,9 +99,9 @@ class DirCheck(object):
 
 def init():
     lib.common.RESULT_DIRECROTY[MODULE_NAME].append({})
+    lib.common.RESULT_DIRECROTY[MODULE_NAME][0]['FILE'] = []
     lib.common.RESULT_DIRECROTY[MODULE_NAME][0]['GIT'] = []
     lib.common.RESULT_DIRECROTY[MODULE_NAME][0]['SVN'] = []
-    lib.common.RESULT_DIRECROTY[MODULE_NAME][0]['FILE'] = []
     lib.common.RESULT_DIRECROTY[MODULE_NAME][0]['DIR'] = []
     return (True, 'SUCCESS')
 
@@ -120,9 +120,9 @@ def run(url_obj):
         if __url not in lib.common.PATH_SET:
             lib.common.PATH_SET.append(__url)
             __url_obj = lib.urlentity.URLEntity(__url)
+            tasks.append(threading.Thread(target=FileCheck(__url_obj).check, args=()))
             tasks.append(threading.Thread(target=GitCheck(__url_obj).check, args=()))
             tasks.append(threading.Thread(target=SvnCheck(__url_obj).check, args=()))
-            tasks.append(threading.Thread(target=FileCheck(__url_obj).check, args=()))
             tasks.append(threading.Thread(target=DirCheck(__url_obj).check, args=()))
     for __t in tasks:
         __t.start()

@@ -76,15 +76,18 @@ def florid_organize():
     # Import modules for phase two:
     core.importer.import_modules_phase_two()
 
+    # Start Spider to crawl the website
     t_spider = threading.Thread(target=core.spider.Spider(lib.common.SOURCE_URL).run, args=())
+    # Start the distributor to distribute the URL to various modules
     t_distributor = threading.Thread(target=core.distributor.consume, args=())
+    # Start the process bar
     t_processbar = threading.Thread(target=lib.processbar.run, args=())
+    # Start the checker to show result every time a module has checked all urls
     t_checker = threading.Thread(target=core.checker.run, args=())
 
     t_processbar.setDaemon(True)
     t_processbar.start()
 
-    # t_checker.setDaemon(True)
     t_checker.start()
 
     t_spider.start()

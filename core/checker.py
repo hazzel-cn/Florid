@@ -12,6 +12,7 @@ def run():
     while len(show_result_set) != len(lib.common.MODULE_DIRECTORY):
         for __module_pointer in lib.common.CHECKED_COUNT:
             # Once the module checked all urls: show result
+            # If spider is finished AND this module has checked all urls AND the result of the module has not been shown
             if lib.common.SPIDER_DONE_FLAG \
                     and lib.common.CHECKED_COUNT[__module_pointer] == lib.common.URL_COUNT \
                     and __module_pointer not in show_result_set:
