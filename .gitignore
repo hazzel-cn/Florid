@@ -91,6 +91,6 @@ ENV/
 .idea/
 
 # Log
-log/*
+log/
 
 .DS_Store
