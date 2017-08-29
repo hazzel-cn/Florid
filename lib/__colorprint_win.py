@@ -1,5 +1,3 @@
-# coding=utf-8
-
 import ctypes
 import sys
 
@@ -41,45 +39,45 @@ class ColorPrintWin(object):
     def __init__(self):
         pass
 
-    def blue(self, mess):
+    def blue(self, mess, end='\n'):
         set_cmd_text_color(FOREGROUND_BLUE)
-        sys.stdout.write(mess)
+        sys.stdout.write(mess+end)
         sys.stdout.flush()
         reset_color()
 
-    def green(self, mess):
+    def green(self, mess, end='\n'):
         set_cmd_text_color(FOREGROUND_GREEN)
-        sys.stdout.write(mess)
+        sys.stdout.write(mess+end)
         sys.stdout.flush()
         reset_color()
 
-    def sky_blue(self, mess):
+    def sky_blue(self, mess, end='\n'):
         set_cmd_text_color(FOREGROUND_SKYBLUE)
-        sys.stdout.write(mess)
+        sys.stdout.write(mess+end)
         sys.stdout.flush()
         reset_color()
 
-    def red(self, mess):
+    def red(self, mess, end='\n'):
         set_cmd_text_color(FOREGROUND_RED)
-        sys.stdout.write(mess)
+        sys.stdout.write(mess+end)
         sys.stdout.flush()
         reset_color()
 
-    def pink(self, mess):
+    def pink(self, mess, end='\n'):
         set_cmd_text_color(FOREGROUND_PINK)
-        sys.stdout.write(mess)
+        sys.stdout.write(mess+end)
         sys.stdout.flush()
         reset_color()
 
-    def yellow(self, mess):
+    def yellow(self, mess, end='\n'):
         set_cmd_text_color(FOREGROUND_YELLOW)
-        sys.stdout.write(mess)
+        sys.stdout.write(mess+end)
         sys.stdout.flush()
         reset_color()
 
-    def white(self, mess):
+    def white(self, mess, end='\n'):
         set_cmd_text_color(FOREGROUND_WHITE)
-        sys.stdout.write(mess)
+        sys.stdout.write(mess+end)
         sys.stdout.flush()
         reset_color()
 

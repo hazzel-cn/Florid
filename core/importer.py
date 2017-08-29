@@ -1,28 +1,31 @@
-# coding=utf-8
-
-import lib.colorprint
 import lib.common
+import lib.colorprint
 
 
-def import_modules_phase_two():
-    for __module_name in lib.common.COMMAND_SET['module_list']:
-        lib.colorprint.color().sky_blue('>[2] %s\t' % __module_name)
-        try:
-            __module_obj = __import__('mod.phase2.' + __module_name, fromlist=["*.py"])
+class Importer(object):
+    def __int__(self):
+        lib.colorprint.color().blue('[*] Importing Modules')
 
-            lib.common.MODULE_DIRECTORY[__module_name] = __module_obj
+    def import_one(self):
+        for __module_name in lib.common.MODULE_ONE_NAME_LIST:
+            print '*', __module_name, '\t',
+            try:
+                __module_obj = __import__('module.phase_one.' + __module_name, fromlist=['*.py'])
+                lib.colorprint.color().green('SUCCESS')
+                lib.common.MODILE_ONE_OBJ_DICT[__module_name] = __module_obj
+            except Exception, e:
+                lib.colorprint.color().red(str(e))
 
-            # init the set of result
-            lib.common.RESULT_DIRECROTY[__module_name] = []
-
-            # init the set of sharing things | to be perfect
-            # lib.common.SHARING_DICTIONARY[__module_name] = {}
-
-            lib.common.CHECKED_COUNT[__module_name] = 0
-
-            __module_obj.init()
-            lib.colorprint.color().green('DONE\n')
-        except Exception, e:
-            lib.colorprint.color().red(str(e) + '\n')
-            pass
-    lib.colorprint.color().green('- Importation Done\n\n')
+    def import_two(self):
+        for __module_name in lib.common.MODULE_NAME_LIST:
+            print '*', __module_name, '\t',
+            try:
+                __module_obj = __import__('module.phase_two.' + __module_name, fromlist=['*.py'])
+                lib.common.MODULE_OBJ_DICT[__module_name] = __module_obj
+                lib.common.RESULT_DICT[__module_name] = []
+                lib.common.ALIVE_LINE[__module_name] = 0
+                lib.colorprint.color().green('SUCCESS')
+                __module_obj.init()
+            except Exception, e:
+                lib.colorprint.color().red(str(e))
+        print
