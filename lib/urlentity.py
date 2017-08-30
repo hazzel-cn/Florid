@@ -1,6 +1,9 @@
 import re
 import time
+
 import requests
+
+import lib.common
 
 
 class URLEntity:
@@ -11,6 +14,7 @@ class URLEntity:
         self.__port = int()
         self.__path = str()
         self.__file = str()
+        self.__source = str()
         self.__query = str()
         self.__isFile = bool()
         self.__response = None
@@ -41,9 +45,15 @@ class URLEntity:
 
         # To match file
         try:
-            self.__file = re.findall('^[a-zA-Z]+://.*/([^/?]*)?', self.__url)[0]
+            self.__file = re.findall('^[a-zA-Z]+://[^?]*/([^/?]*)?', self.__url)[0]
         except IndexError, FileNotFound:
             self.__file = ''
+
+        # To match source
+        try:
+            self.__source = re.findall('^([a-zA-Z]+://[^/]+/)', self.__url)[0]
+        except IndexError, SourceNotFound:
+            self.__source = re.findall('^([a-zA-Z]+://[^:/]+)/', self.__url)[0]
 
         # To match path
         try:
@@ -73,8 +83,14 @@ class URLEntity:
     def get_hostname(self):
         return self.__host
 
+    def get_port(self):
+        return self.__port
+
     def get_file(self):
         return self.__file
+
+    def get_source(self):
+        return self.__source
 
     def get_path(self):
         return self.__path
@@ -85,13 +101,19 @@ class URLEntity:
     def is_file(self):
         return self.__isFile
 
-    def make_get_request(self, delay=0):
-        time.sleep(delay)
-        self.__response = requests.get(self.__url)
+    def make_get_request(self, timeout=lib.common.TIME_OUT, delay=0):
+        try:
+            time.sleep(delay)
+            self.__response = requests.get(self.__url, timeout=timeout)
+        except Exception:
+            self.__response = None
 
-    def make_post_request(self, data, delay=0):
-        time.sleep(delay)
-        self.__response = requests.post(self.__url, data=data)
+    def make_post_request(self, data, timeout=lib.common.TIME_OUT, delay=0):
+        try:
+            time.sleep(delay)
+            self.__response = requests.post(self.__url, data=data, timeout=timeout)
+        except Exception:
+            self.__response = None
 
     def get_response(self):
         return self.__response
@@ -108,7 +130,7 @@ if __name__ == '__main__':
     # test_case.append('ftp://www.floridhazel.com:9999/')
     # test_case.append('ftp://www.floridhazel.com:9999')
 
-    test_case.append('http://www.floridhazel.com/admin/manage/index.php?id=1&p=admin')
+    test_case.append('http://www.floridhazel.com:900/admin/manage/index.php?id=1&p=./admin.jpg')
     test_case.append('www.floridhazel.com/admin/manage/index.php?id=1&p=admin')
     test_case.append('http://www.floridhazel.com/admin/manage/index.php')
     test_case.append('http://www.floridhazel.com/admin/manage/')
@@ -121,6 +143,6 @@ if __name__ == '__main__':
         print url
         import pprint
 
-        url_entity.make_get_request()
+        # url_entity.make_get_request()
         pprint.pprint(url_entity.__dict__)
         print

@@ -1,6 +1,5 @@
-import pprint
-import lib.common
 import lib.colorprint
+import lib.common
 
 
 class Checker(object):
@@ -26,6 +25,7 @@ class Checker(object):
     def get_total_length(self):
         return self.count_elements
 
+
 class ResultPrinter(object):
     def __init__(self):
         self.all_module_list = lib.common.MODULE_NAME_LIST
@@ -35,16 +35,26 @@ class ResultPrinter(object):
         while len(self.all_module_list) != 0:
             if lib.common.FLAG['producer_done']:
                 # print the result of phase one
-                if not self.phase_one_printed and len(lib.common.RESULT_ONE_DICT) == len(lib.common.MODULE_ONE_NAME_LIST):
-                    lib.colorprint.color().sky_blue('[=== Site Info ===]')
-                    for __key in lib.common.RESULT_ONE_DICT:
-                        print __key + ':\t' + lib.common.RESULT_ONE_DICT[__key]
-                    self.phase_one_printed = True
-                    print
+                if not self.phase_one_printed:
+                    one_finish_count = 0
+                    for _m_n in lib.common.MODULE_ONE_NAME_LIST:
+                        one_finish_count += lib.common.ALIVE_LINE[_m_n]
+                    if one_finish_count == len(lib.common.MODULE_ONE_NAME_LIST):
+                        lib.colorprint.color().sky_blue('[====\t' + 'Site Info'.ljust(14) + '====]')
+                        for __key in lib.common.RESULT_ONE_DICT:
+                            print __key + ':\t' + lib.common.RESULT_ONE_DICT[__key]
+                        self.phase_one_printed = True
+                        print
+                if self.phase_one_printed:
+                    for __module_name in self.all_module_list:
+                        if lib.common.ALIVE_LINE[__module_name] >= 0:
+                            title = '[====\t' + __module_name.ljust(14) + '====]'
+                            lib.colorprint.color().sky_blue(title)
+                            self.all_module_list.remove(__module_name)
 
-                for __module_name in self.all_module_list:
-                    if lib.common.ALIVE_LINE[__module_name] >= 0:
-                        lib.colorprint.color().sky_blue('[=== ' + __module_name + ' ===]')
-                        self.all_module_list.remove(__module_name)
-                        pprint.pprint(lib.common.RESULT_DICT[__module_name])
+                            for item in lib.common.RESULT_DICT[__module_name]:
+                                lib.colorprint.color().green('\t> ' + item)
+                            # pprint.pprint(lib.common.RESULT_DICT[__module_name])
+
+                            print
         lib.common.FLAG['scan_done'] = True

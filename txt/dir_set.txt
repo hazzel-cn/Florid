@@ -5,3 +5,4 @@
 /manage/
 /wp-admin/
 /kindeditor/
+/hpp/
