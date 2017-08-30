@@ -1,8 +1,8 @@
+import datetime
+import glob
+import optparse
 import re
 import sys
-import optparse
-import glob
-import datetime
 import threading
 
 import core.initializer
@@ -22,8 +22,8 @@ reload(sys)
 sys.setdefaultencoding('utf8')
 
 florid_banner = {
-    'version': '3.0.0',
-    'update': '2017-8-28',
+    'version': '3.1.0',
+    'update': '2017-8-29',
     'logo':
         r'''
          _______         _____   ______ _____ ______ 
