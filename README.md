@@ -1,29 +1,29 @@
 # Florid Scanner
-An active scanner for CTF Game
-
-Only tested on MacOS. (If you want a stable version, please check the tag "version0")
-
-Some time is needed to make it works properly on Windows and Linux.
+An active scanner specially for CTF Game
 
 ### Usage:
 
 ```
 python florid.py -h
+python florid.py -u "http://testphp.vulnweb.com/product.php?pic=1" -m "gitcheck, vimdown"
 python florid.py -u "http://testphp.vulnweb.com/product.php?pic=1" -m ALL
 ```
 
-![](DOCUMENT/show.gif)
+![](./DOCUMENT/show.png)
 
-### Tips
+### Note
 
-After you scanned a website by this scanner, the system will generate a directory in "./log" named by the hostname of the website. The result of the spider.py will be stored in url_list.txt in that directory.
+Modules to run before the check starts should be placed in `./module/phase_one`
 
-Now the scanner can scan for the backup files from VIM and Gedit, and sensitive directories and files.
+Modules for checking URLs should be placed in `./module/phase_two/`
 
-### Development
+You are expected to develop your modules referring to `./module/phase_two/sample-2.py`
 
-The modules to run before the check starts should be placed in `./mod/phase1`
+### Update Log
 
-The modules for checking URLs should be placed in `./mod/phase2`
+#### v 3.1.1
 
-You are expected to develop your modules referring to `./mod/phase2/sample.py`
+* New interface
+* Screenshot update
+* Readme file update
+* Bugs fix

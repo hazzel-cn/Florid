@@ -57,16 +57,19 @@ def florid_init(options):
         if '__init__' not in __file_name and 'pyc' not in __file_name:
             lib.common.MODULE_ONE_NAME_LIST.append(
                 re.findall('.*(/|\\\\)(.+)\.py$', __file_name)[0][1])
-    if options.modules == 'ALL':
+    if options.modules.lower() == 'all':
         for __file_name in glob.glob('module/phase_two/*.py'):
             if '__init__' not in __file_name and 'pyc' not in __file_name:
                 lib.common.MODULE_NAME_LIST.append(
                     re.findall('.*(/|\\\\)(.+)\.py$', __file_name)[0][1])
+    else:
+        if options.modules != '':
+            for __file_name in options.modules.replace(' ', '').split(','):
+                lib.common.MODULE_NAME_LIST.append(__file_name)
 
 
 def florid_organize():
-    core.importer.Importer().import_one()
-    core.importer.Importer().import_two()
+    core.importer.Importer().do_import()
 
     tasks = list([])
     # tasks.append(threading.Thread(target=lib.processbar.run, args=()))
