@@ -2,6 +2,7 @@ import datetime
 import glob
 import optparse
 import re
+import signal
 import sys
 import threading
 
@@ -22,8 +23,8 @@ reload(sys)
 sys.setdefaultencoding('utf8')
 
 florid_banner = {
-    'version': '3.1.0',
-    'update': '2017-8-29',
+    'version': '3.2.0',
+    'update': '2017-9-16',
     'logo':
         r'''
          _______         _____   ______ _____ ______ 
@@ -38,7 +39,7 @@ def florid_show_banner():
     print '[Florid Version] ' + florid_banner['version']
     print '[Last Updated] ' + florid_banner['update']
     print '[*] ' + datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-    print '\nPress [Ctrl+Z] to suspend the scanner'
+    print '\nPress [Ctrl+C] to abort the scan'
     print '\n'
 
 
@@ -80,13 +81,27 @@ def florid_organize():
     for __task in tasks:
         __task.setDaemon(True)
         __task.start()
-    for __task in tasks:
-        __task.join()
+    while not lib.common.FLAG['scan_done']:
+        alive = False
+        if lib.common.FLAG['stop_signal']:
+            for t in tasks:
+                alive = alive or t.isAlive()
+            if not alive:
+                break
+
 
     lib.colorprint.color().green('\n-- FINISH --\n')
 
 
+def florid_exit(signum, frame):
+    lib.common.FLAG['stop_signal'] = True
+    lib.colorprint.color().red('\n\n[!] User abort')
+    # exit()
+
+
 if __name__ == '__main__':
+    signal.signal(signal.SIGINT, florid_exit)
+    signal.signal(signal.SIGTERM, florid_exit)
     florid_show_banner()
     florid_init(florid_get_parse())
     florid_organize()

@@ -6,3 +6,4 @@
 /wp-admin/
 /kindeditor/
 /hpp/
+/user_guide/

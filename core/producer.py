@@ -1,12 +1,12 @@
 import os
 import urlparse
 
-import requests
 import bs4
+import requests
 
+import lib.colorprint
 import lib.common
 import lib.urlentity
-import lib.colorprint
 
 
 class Producer(object):
@@ -36,9 +36,16 @@ class Producer(object):
     def run(self):
         lib.colorprint.color().blue('[*] Scanning')
         while not lib.common.FLAG['producer_done']:
+            if lib.common.FLAG['stop_signal']:
+                break
             while len(self.waiting_list) > 0:
+                if lib.common.FLAG['stop_signal']:
+                    break
                 print '\r+ ' + self.waiting_list[0]
                 try:
+                    if self.waiting_list[0].endswith('png') or self.waiting_list[0].endswith('jpg') or \
+                            self.waiting_list[0].endswith('bmp') or self.waiting_list[0].endswith('gif'):
+                        self.waiting_list.pop(0)
                     r = requests.get(url=self.waiting_list[0])
                     soup = bs4.BeautifulSoup(r.text, 'html.parser')
                 except Exception, e:
@@ -53,7 +60,8 @@ class Producer(object):
                 self.__find_joint(soup=soup, tag1='form', tag2='action')
                 self.__find_joint(soup=soup, tag1='link', tag2='href')
             lib.common.FLAG['producer_done'] = True
-        lib.colorprint.color().yellow('[*] ' + str(lib.common.CHECKER_OBJ.get_total_length()) + ' URLs Found', end='\n\n')
+        lib.colorprint.color().yellow('[*] ' + str(lib.common.CHECKER_OBJ.get_total_length()) + ' URLs Found',
+                                      end='\n\n')
 
 
 if __name__ == '__main__':

@@ -11,7 +11,8 @@ CONFIG = {
 # Flag for some things
 FLAG = {
     'producer_done': False,
-    'scan_done': False
+    'scan_done': False,
+    'stop_signal': False
 }
 
 # ----------------------------

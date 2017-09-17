@@ -16,3 +16,5 @@ www.zip
 readme.md
 README.md
 robots.txt
+license.txt
+composer.json

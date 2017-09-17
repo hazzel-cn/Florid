@@ -1,5 +1,6 @@
-import lib.common
 import threading
+
+import lib.common
 
 
 class Consumer(object):
@@ -11,6 +12,8 @@ class Consumer(object):
         for __module_name in lib.common.MODILE_ONE_OBJ_DICT:
             threading.Thread(target=lib.common.MODILE_ONE_OBJ_DICT[__module_name].run, args=()).start()
         while not lib.common.CHECKER_OBJ.get_producer_state() or lib.common.CHECKER_OBJ.get_queue_length() > 0:
+            # if lib.common.FLAG['stop_signal']:
+            #    break
             if lib.common.CHECKER_OBJ.get_queue_length() > 0:
                 url_to_be_checked = lib.common.CHECKER_OBJ.queue_pop()
                 for __module_name in lib.common.MODULE_OBJ_DICT:
