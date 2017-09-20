@@ -1,3 +1,4 @@
+import config
 import lib.colorprint
 import lib.common
 
@@ -33,8 +34,9 @@ class ResultPrinter(object):
 
     def run(self):
         while len(self.all_module_list) != 0:
-            # if lib.common.FLAG['stop_signal']:
-            #    break
+            if config.config['exit_without_result']:
+                if lib.common.FLAG['stop_signal']:
+                    break
             if lib.common.FLAG['producer_done']:
                 # print the result of phase one
                 if not self.phase_one_printed:

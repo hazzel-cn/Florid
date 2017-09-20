@@ -23,7 +23,7 @@ reload(sys)
 sys.setdefaultencoding('utf8')
 
 florid_banner = {
-    'version': '3.2.0',
+    'version': '3.2.1',
     'update': '2017-9-16',
     'logo':
         r'''

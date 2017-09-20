@@ -27,6 +27,10 @@ You are expected to develop your modules referring to `./module/phase_two/sample
 
 ### Update Log
 
+#### v 3.2.1
+* Configuration file added
+* Two modes available after you terminate the scanning process
+
 #### v 3.2.0
 
 * "Ctrl+C" can terminate the url crawling.You wont's lose the result you have found.
