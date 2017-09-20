@@ -26,7 +26,7 @@ CHECKER_OBJ = core.checker.Checker()
 MODULE_NAME_LIST = []
 MODULE_OBJ_DICT = {}
 MODULE_ONE_NAME_LIST = []
-MODILE_ONE_OBJ_DICT = {}
+MODULE_ONE_OBJ_DICT = {}
 
 # ----------------------------
 # Result Directory

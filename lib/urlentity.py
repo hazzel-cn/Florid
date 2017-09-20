@@ -3,6 +3,7 @@ import time
 
 import requests
 
+import config.config
 import lib.common
 
 
@@ -104,14 +105,19 @@ class URLEntity:
     def make_get_request(self, timeout=lib.common.TIME_OUT, delay=0):
         try:
             time.sleep(delay)
-            self.__response = requests.get(self.__url, timeout=timeout)
+            self.__response = requests.get(url=self.__url, \
+                                           headers=config.config.config['request_headers'], \
+                                           timeout=timeout)
         except Exception:
             self.__response = None
 
     def make_post_request(self, data, timeout=lib.common.TIME_OUT, delay=0):
         try:
             time.sleep(delay)
-            self.__response = requests.post(self.__url, data=data, timeout=timeout)
+            self.__response = requests.post(url=self.__url, \
+                                            data=data, \
+                                            headers=config.config.config['request_headers'], \
+                                            timeout=timeout)
         except Exception:
             self.__response = None
 

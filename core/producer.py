@@ -25,9 +25,9 @@ class Producer(object):
         self.log_fp = open(
             lib.common.CONFIG['project_path'] + '/log/' + self.__source_url_obj.get_hostname() + '/urllist.txt', 'w+')
 
-    def __find_joint(self, soup, tag1, tag2):
-        for tag in soup.find_all(tag1):
-            url_new = urlparse.urljoin(self.__source_url_obj.get_url(), tag.get(tag2))
+    def __find_joint(self, soup, tags, attribute):
+        for tag in soup.find_all(tags):
+            url_new = urlparse.urljoin(self.__source_url_obj.get_url(), tag.get(attribute))
             url_new_obj = lib.urlentity.URLEntity(url_new)
             if url_new_obj.get_url() not in self.crawled_list and url_new_obj.get_hostname() == self.__source_url_obj.get_hostname() and '#' not in url_new_obj.get_url():
                 self.waiting_list.append(url_new_obj.get_url())
@@ -43,8 +43,11 @@ class Producer(object):
                     break
                 print '\r+ ' + self.waiting_list[0]
                 try:
-                    if self.waiting_list[0].endswith('png') or self.waiting_list[0].endswith('jpg') or \
-                            self.waiting_list[0].endswith('bmp') or self.waiting_list[0].endswith('gif'):
+                    url_obj_to_be_checked = lib.urlentity.URLEntity(self.waiting_list[0])
+                    while url_obj_to_be_checked.get_file().lower().endswith('png') or \
+                            url_obj_to_be_checked.get_file().lower().endswith('jpg') or \
+                            url_obj_to_be_checked.get_file().lower().endswith('bmp') or \
+                            url_obj_to_be_checked.get_file().lower().endswith('gif'):
                         self.waiting_list.pop(0)
                     r = requests.get(url=self.waiting_list[0])
                     soup = bs4.BeautifulSoup(r.text, 'html.parser')
@@ -56,10 +59,11 @@ class Producer(object):
                 self.log_fp.writelines(self.waiting_list[0] + '\n')
                 self.waiting_list.pop(0)
 
-                self.__find_joint(soup=soup, tag1='a', tag2='href')
-                self.__find_joint(soup=soup, tag1='form', tag2='action')
-                self.__find_joint(soup=soup, tag1='link', tag2='href')
+                self.__find_joint(soup=soup, tags='a', attribute='href')
+                self.__find_joint(soup=soup, tags='form', attribute='action')
+                self.__find_joint(soup=soup, tags='link', attribute='href')
             lib.common.FLAG['producer_done'] = True
+        self.log_fp.close()
         lib.colorprint.color().yellow('[*] ' + str(lib.common.CHECKER_OBJ.get_total_length()) + ' URLs Found',
                                       end='\n\n')
 

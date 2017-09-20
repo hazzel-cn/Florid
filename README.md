@@ -27,6 +27,11 @@ You are expected to develop your modules referring to `./module/phase_two/sample
 
 ### Update Log
 
+#### v 3.3.2
+* Fix bugs
+* Add comment
+* Try to allow customed configuration
+
 #### v 3.2.1
 * Configuration file added
 * Two modes available after you terminate the scanning process

@@ -23,8 +23,8 @@ reload(sys)
 sys.setdefaultencoding('utf8')
 
 florid_banner = {
-    'version': '3.2.1',
-    'update': '2017-9-16',
+    'version': '3.2.2',
+    'update': '2017-9-20',
     'logo':
         r'''
          _______         _____   ______ _____ ______ 
@@ -89,14 +89,12 @@ def florid_organize():
             if not alive:
                 break
 
-
     lib.colorprint.color().green('\n-- FINISH --\n')
 
 
 def florid_exit(signum, frame):
     lib.common.FLAG['stop_signal'] = True
-    lib.colorprint.color().red('\n\n[!] User abort')
-    # exit()
+    lib.colorprint.color().red('\n\n[!] User abort. Terminating the scan...')
 
 
 if __name__ == '__main__':
