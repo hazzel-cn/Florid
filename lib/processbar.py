@@ -23,10 +23,12 @@ class ProgressBar:
 def run():
     count = 0
     while not lib.common.FLAG['scan_done']:
+        if lib.common.FLAG['stop_signal']:
+            break
         a_side = ['\\', '|', '/', '-']
         b_side = 'floooooooooooooorid'
         i = count % len(b_side)
         n = b_side[:i] + chr(ord(b_side[i])-32) + b_side[i+1:]
-        lib.colorprint.color().green('__' + a_side[count % 4] + '__' + n, end='\r')
+        lib.colorprint.color().green('  ' + a_side[count % 4] + '__' + n, end='\r')
         time.sleep(0.1)
         count += 1

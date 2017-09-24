@@ -57,8 +57,12 @@ class ResultPrinter(object):
 
                     if one_finish_count == len(lib.common.MODULE_ONE_NAME_LIST):
                         lib.colorprint.color().sky_blue('[====\t' + 'Site Info'.ljust(14) + '====]')
+
+                        longest_key = 0
                         for __key in lib.common.RESULT_ONE_DICT:
-                            print __key + ':\t' + lib.common.RESULT_ONE_DICT[__key]
+                            longest_key = max(longest_key, len(__key))
+                        for __key in lib.common.RESULT_ONE_DICT:
+                            print (__key + ': ').ljust(longest_key + 2) + lib.common.RESULT_ONE_DICT[__key]
                         self.phase_one_printed = True
                         print
 

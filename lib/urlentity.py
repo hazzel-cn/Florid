@@ -4,10 +4,10 @@ import time
 import requests
 
 import config.config
-import lib.common
 
 
 class URLEntity:
+    # Example URL: https://example.com:443/direct/file.php?key=value
     def __init__(self, raw_url):
         self.__url = raw_url
         self.__scheme = str()
@@ -21,6 +21,7 @@ class URLEntity:
         self.__response = None
 
         # To match scheme
+        # Result: https
         try:
             self.__scheme = re.findall('^([a-zA-Z]*)://', self.__url)[0]
         except IndexError, SchemeNotFound:
@@ -28,6 +29,7 @@ class URLEntity:
             self.__url = self.__scheme + '://' + self.__url
 
         # To match host
+        # Result: example.com
         try:
             self.__host = re.findall('^[a-zA-Z]+://([^/:]+)', self.__url)[0]
         except IndexError, HostnameNotFound:
@@ -35,28 +37,33 @@ class URLEntity:
             print HostnameNotFound
 
         # To match port
+        # Result: 443
         try:
             self.__port = int(re.findall('^[a-zA-Z]+://[^:]+:([0-9]+)/', self.__url)[0])
         except IndexError, PortNotFound:
             self.__port = 80
 
         # To format the url
+        # Result: a.com -> a.com/
         if re.match('[a-zA-Z]+://[^/]+$', self.__url):
             self.__url += '/'
 
         # To match file
+        # Result: file.php
         try:
             self.__file = re.findall('^[a-zA-Z]+://[^?]*/([^/?]*)?', self.__url)[0]
         except IndexError, FileNotFound:
             self.__file = ''
 
         # To match source
+        # Result: https://example.com:443/
         try:
             self.__source = re.findall('^([a-zA-Z]+://[^/]+/)', self.__url)[0]
         except IndexError, SourceNotFound:
             self.__source = re.findall('^([a-zA-Z]+://[^:/]+)/', self.__url)[0]
 
         # To match path
+        # Result: /direct/
         try:
             self.__path = re.findall('^[a-zA-Z]+://[^/]+([^?]*)', self.__url)[0]
             self.__path = self.__path.replace(self.__file, '')
@@ -64,6 +71,7 @@ class URLEntity:
             self.__path = '/'
 
         # To match query
+        # Result: key=value
         try:
             self.__query = re.findall('\?(.+)', self.__url)[0]
         except IndexError, QueryNotFound:
@@ -102,27 +110,40 @@ class URLEntity:
     def is_file(self):
         return self.__isFile
 
-    def make_get_request(self, timeout=lib.common.TIME_OUT, delay=0):
+    def make_get_request(self, timeout=config.config.config['time_out'], delay=0):
         try:
             time.sleep(delay)
-            self.__response = requests.get(url=self.__url, \
-                                           headers=config.config.config['request_headers'], \
+            self.__response = requests.get(url=self.__url,
+                                           headers=config.config.config['request_headers'],
+                                           timeout=timeout)
+        except requests.Timeout:
+            time.sleep(delay)
+            self.__response = requests.get(url=self.__url,
+                                           headers=config.config.config['request_headers'],
+                                           timeout=timeout)
+        except Exception, e:
+            # print e
+            self.__response = None
+        return self.__response
+
+    def make_post_request(self, data, timeout=config.config.config['time_out'], delay=0):
+        try:
+            time.sleep(delay)
+            self.__response = requests.post(url=self.__url,
+                                            data=data,
+                                            headers=config.config.config['request_headers'],
+                                            timeout=timeout)
+        except requests.Timeout:
+            time.sleep(delay)
+            self.__response = requests.get(url=self.__url,
+                                           headers=config.config.config['request_headers'],
                                            timeout=timeout)
         except Exception:
             self.__response = None
-
-    def make_post_request(self, data, timeout=lib.common.TIME_OUT, delay=0):
-        try:
-            time.sleep(delay)
-            self.__response = requests.post(url=self.__url, \
-                                            data=data, \
-                                            headers=config.config.config['request_headers'], \
-                                            timeout=timeout)
-        except Exception:
-            self.__response = None
+        return self.__response
 
     def get_response(self):
-        return self.__response
+        return self.__response if self.__response is not None else self.make_get_request()
 
 
 # Only for test below

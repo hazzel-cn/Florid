@@ -42,13 +42,13 @@ class Producer(object):
                 if lib.common.FLAG['stop_signal']:
                     break
                 print '\r+ ' + self.waiting_list[0]
+                url_obj_to_be_checked = lib.urlentity.URLEntity(self.waiting_list[0])
+                while url_obj_to_be_checked.get_file().lower().endswith('png') or \
+                        url_obj_to_be_checked.get_file().lower().endswith('jpg') or \
+                        url_obj_to_be_checked.get_file().lower().endswith('bmp') or \
+                        url_obj_to_be_checked.get_file().lower().endswith('gif'):
+                    self.waiting_list.pop(0)
                 try:
-                    url_obj_to_be_checked = lib.urlentity.URLEntity(self.waiting_list[0])
-                    while url_obj_to_be_checked.get_file().lower().endswith('png') or \
-                            url_obj_to_be_checked.get_file().lower().endswith('jpg') or \
-                            url_obj_to_be_checked.get_file().lower().endswith('bmp') or \
-                            url_obj_to_be_checked.get_file().lower().endswith('gif'):
-                        self.waiting_list.pop(0)
                     r = requests.get(url=self.waiting_list[0])
                     soup = bs4.BeautifulSoup(r.text, 'html.parser')
                 except Exception, e:
@@ -62,10 +62,10 @@ class Producer(object):
                 self.__find_joint(soup=soup, tags='a', attribute='href')
                 self.__find_joint(soup=soup, tags='form', attribute='action')
                 self.__find_joint(soup=soup, tags='link', attribute='href')
+            lib.colorprint.color().yellow('[*] ' + str(lib.common.CHECKER_OBJ.get_total_length()) + ' URLs Found',
+                                          end='\n\n')
             lib.common.FLAG['producer_done'] = True
         self.log_fp.close()
-        lib.colorprint.color().yellow('[*] ' + str(lib.common.CHECKER_OBJ.get_total_length()) + ' URLs Found',
-                                      end='\n\n')
 
 
 if __name__ == '__main__':

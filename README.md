@@ -1,5 +1,5 @@
 # Florid Scanner
-An active scanner specially for CTF Game
+An active scanner specially for CTF Games
 
 ### Usage:
 
@@ -23,11 +23,18 @@ You are expected to develop your modules referring to `./module/phase_two/sample
 
 * Turn those URLs tansfered between components into URL object, so that the scnner need't to redundant request.  
 * Accelerate the crawling by multi-thread spider instead of the current single-thread one.
-* Add some information about HTTP Headers into the class URLEntity so that the requests could be similar to those made by real browsers.
+* Multi-threading Lock should be added although there is no problem with the shared virables.
 
 ### Update Log
 
-#### v 3.3.2
+#### v 3.2.3
+* Module "pathleak" added
+* Comment added
+* Directory _config_ added
+* Headers for request modified
+* Skip parser when picture found
+
+#### v 3.2.2
 * Fix bugs
 * Add comment
 * Try to allow customed configuration

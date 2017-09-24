@@ -43,7 +43,7 @@ SOURCE_URL = ''
 
 # ----------------------------
 # Time to wait when make requests
-TIME_OUT = 5
+TIME_OUT = 8
 
 # ----------------------------
 # Checked paths
