@@ -21,11 +21,17 @@ You are expected to develop your modules referring to `./module/phase_two/sample
 
 ### To do List
 
-* Turn those URLs tansfered between components into URL object, so that the scnner need't to redundant request.  
+* Turn those URLs transferred between components into URL object, so that the scnner need't to redundant request.  
 * Accelerate the crawling by multi-thread spider instead of the current single-thread one.
 * Multi-threading Lock should be added although there is no problem with the shared virables.
 
 ### Update Log
+
+
+#### v 3.2.4
+* New module "djangodebug" added
+* Modification to warning information
+* By the way, does multi-threading crawler really help?
 
 #### v 3.2.3
 * Module "pathleak" added

@@ -12,8 +12,14 @@ class Consumer(object):
     def run(self):
         # Run all modules in phase one to check the source URL.
         # That's why there is no URL as parameter.
+        tasks_one = []
         for __module_name in lib.common.MODULE_ONE_OBJ_DICT:
-            threading.Thread(target=lib.common.MODULE_ONE_OBJ_DICT[__module_name].run, args=()).start()
+            t = threading.Thread(target=lib.common.MODULE_ONE_OBJ_DICT[__module_name].run, args=())
+            tasks_one.append(t)
+            t.setDaemon(True)
+            t.start()
+        for _t in tasks_one:
+            _t.join()
 
         # While the checker still needs to work, or
         # while printer still needs to work due to the items in the Checker queue.

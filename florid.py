@@ -23,8 +23,8 @@ reload(sys)
 sys.setdefaultencoding('utf8')
 
 florid_banner = {
-    'version': '3.2.3',
-    'update': '2017-9-20',
+    'version': '3.2.4',
+    'update': '2017-9-25',
     'logo':
         r'''
          _______         _____   ______ _____ ______ 
@@ -51,7 +51,8 @@ def florid_get_parse():
     (options, args) = parser.parse_args()
 
     if options.modules is None:
-        lib.colorprint.color().red('[!] Fatal Error: No modules specified. Please see help with "-h"', end='\n')
+        lib.colorprint.color().red('[!] Fatal Error: No modules specified. Use "-m" to do it.', end='\n')
+        lib.colorprint.color().red('[!] You can get help with "-h"', end='\n')
         exit()
     return options
 
