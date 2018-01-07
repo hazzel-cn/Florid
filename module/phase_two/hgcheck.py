@@ -3,7 +3,7 @@ import threading
 import lib.common
 import lib.urlentity
 
-MODULE_NAME = 'svncheck'
+MODULE_NAME = 'hgcheck'
 
 
 def init():
@@ -11,22 +11,16 @@ def init():
 
 
 def check(url_obj):
-    new_url_obj = lib.urlentity.URLEntity(url_obj.get_url() + '.svn/')
+    new_url_obj = lib.urlentity.URLEntity(url_obj.get_url() + '.hg/')
     new_url_obj.make_get_request()
     if new_url_obj.get_response().status_code != 404:
         lib.common.RESULT_DICT[MODULE_NAME].append(new_url_obj.get_url())
-        svn_dir = ['wc.db', 'entries']
-        for item in svn_dir:
-            new_new_url_obj = lib.urlentity.URLEntity(new_url_obj.get_url() + item)
-            new_new_url_obj.make_get_request()
-            if new_new_url_obj.get_response().status_code != 404:
-                lib.common.RESULT_DICT[MODULE_NAME].append(new_new_url_obj.get_url())
 
 
 def run(url):
     url_obj = lib.urlentity.URLEntity(raw_url=url)
-    target_url = url_obj.get_hostname() + ':' + str(url_obj.get_port()) + '/'
-    target_url_list = list([])
+    target_url = url_obj.get_source() + '/'
+    target_url_list = list([target_url])
     if not url_obj.is_file():
         path_section_list = filter(lambda x: x != '', url_obj.get_path().split('/'))
         for path_section in path_section_list:
