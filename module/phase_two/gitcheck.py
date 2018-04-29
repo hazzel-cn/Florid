@@ -13,7 +13,7 @@ def init():
 def check(url_obj):
     new_url_obj = lib.urlentity.URLEntity(url_obj.get_url() + '.git/')
     new_url_obj.make_get_request()
-    if new_url_obj.get_response().status_code != 404:
+    if new_url_obj.get_response() is not None and new_url_obj.get_response().status_code != 404:
         lib.common.RESULT_DICT[MODULE_NAME].append(new_url_obj.get_url())
 
 
